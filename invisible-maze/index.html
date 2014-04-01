@@ -13,8 +13,13 @@
 <body>
 
 <h1>Invisible Maze</h1>
-<p>Move the guy to the exit while avoiding the obstacles, which appear
-as you near them. They will move if you bump them.</p>
+<p>Using the arrow keys, move the guy to the exit
+while avoiding the obstacles, which appear
+as you near them. They will move if you bump them. You become
+invisible as soon as you move, and reappear briefly when you
+hit obstacles.
+<a href="https://github.com/dcbriccetti/web-games/tree/master/invisible-maze">Source code</a>
+</p>
 
 <script type="text/javascript">
 
@@ -35,6 +40,7 @@ var health = 100;
 var healthText;
 var mines;
 var running = true;
+var numMines = 60;
 
 function create() {
     game.stage.backgroundColor = '303030';
@@ -56,7 +62,7 @@ function create() {
 
     mines = game.add.group();
 
-    for (var i = 0; i < 30; i++) {
+    for (var i = 0; i < numMines; i++) {
         var newX = 20 + Math.random() * (game.world.width - 40);
         var newY = 20 + Math.random() * (game.world.height - 40);
         if (spriteDistance(player, newX, newY) > 50 && nearestMineDistance(newX, newY) > 50) {
