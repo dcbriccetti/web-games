@@ -1,0 +1,114 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+    <title>Invisible Player Escapes Maze</title>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 1em;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Invisible Maze</h1>
+<script type="text/javascript">
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
+    preload: preload, create: create, update: update
+});
+
+function preload() {
+    game.load.image('mine', 'assets/mine.png');
+    game.load.image('dude', 'assets/dude.png');
+}
+
+var player;
+var cursors;
+var damage = 0;
+var damageText;
+var mines;
+
+function create() {
+
+    game.stage.backgroundColor = '202020';
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.gravity.x = 0;
+    game.physics.p2.gravity.y = 0;
+
+    mines = game.add.group();
+
+    for (var i = 0; i < 30; i++) {
+        var mine = mines.create(20 + Math.random() * (game.world.width - 40),
+                Math.random() * game.world.height, 'mine');
+        game.physics.p2.enable(mine);
+        mine.body.mass = 100;
+    }
+
+    player = game.add.sprite(4, game.world.height / 2, 'dude');
+    game.physics.p2.enable(player);
+    player.body.collideWorldBounds = true;
+    player.body.mass = 0.1;
+    player.body.onBeginContact.add(mineHit, this);
+
+    damageText = game.add.text(16, 16, damageTextString(), { fontSize: '32px', fill: '#fff' });
+
+    //  Our controls.
+    cursors = game.input.keyboard.createCursorKeys();
+}
+
+function mineHit (body, shapeA, shapeB, equation) {
+    damage += 10;
+    damageText.text = damageTextString();
+    player.alpha = 1;
+}
+
+function update() {
+
+    var moveAmt = 100;
+    player.body.setZeroVelocity();
+
+    var moved = false;
+
+    if (cursors.left.isDown) {
+        player.body.moveLeft(moveAmt);
+        moved = true;
+    }
+    if (cursors.right.isDown) {
+        player.body.moveRight(moveAmt);
+        moved = true;
+    }
+    if (cursors.up.isDown) {
+        player.body.moveUp(moveAmt);
+        moved = true;
+    }
+    if (cursors.down.isDown) {
+        player.body.moveDown(moveAmt);
+        moved = true;
+    }
+
+    if (moved) {
+        player.alpha = 0;
+    }
+
+    mines.forEach(function(mine) {
+        var dx = (mine.x - player.x);
+        var dx2 = dx * dx;
+        var dy = (mine.y - player.y);
+        var dy2 = dy * dy;
+        var ds = Math.sqrt(dx2 + dy2);
+        var thresh = 100;
+        mine.alpha = 1.0 - Math.min(thresh, ds) / thresh;
+    });
+}
+
+function damageTextString() {
+    return 'Damage: ' + damage;
+}
+</script>
+
+<p>Move the guy to the exit while avoiding the obstacles, which appear
+as you near them.</p>
+</body>
+</html>
