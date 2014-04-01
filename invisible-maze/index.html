@@ -13,6 +13,9 @@
 <body>
 
 <h1>Invisible Maze</h1>
+<p>Move the guy to the exit while avoiding the obstacles, which appear
+as you near them. They will move if you bump them.</p>
+
 <script type="text/javascript">
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
@@ -22,93 +25,135 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
 function preload() {
     game.load.image('mine', 'assets/mine.png');
     game.load.image('dude', 'assets/dude.png');
+    game.load.image('door', 'assets/door.png');
 }
 
 var player;
+var door;
 var cursors;
-var damage = 0;
-var damageText;
+var health = 100;
+var healthText;
 var mines;
+var running = true;
 
 function create() {
-
-    game.stage.backgroundColor = '202020';
+    game.stage.backgroundColor = '303030';
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.x = 0;
     game.physics.p2.gravity.y = 0;
 
+    player = game.add.sprite(40, game.world.height / 2, 'dude');
+    game.physics.p2.enable(player);
+    player.body.collideWorldBounds = true;
+    player.body.mass = 1;
+    player.body.fixedRotation = true;
+    player.body.onBeginContact.add(spriteContact, this);
+
+    door = game.add.sprite(game.world.width - 12, game.world.height / 2 - 50, 'door');
+    game.physics.p2.enable(door);
+    door.body.mass = 10000;
+    door.body.fixedRotation = true;
+
     mines = game.add.group();
 
     for (var i = 0; i < 30; i++) {
-        var mine = mines.create(20 + Math.random() * (game.world.width - 40),
-                Math.random() * game.world.height, 'mine');
-        game.physics.p2.enable(mine);
-        mine.body.mass = 100;
+        var newX = 20 + Math.random() * (game.world.width - 40);
+        var newY = 20 + Math.random() * (game.world.height - 40);
+        if (spriteDistance(player, newX, newY) > 50 && nearestMineDistance(newX, newY) > 50) {
+            var mine = mines.create(newX, newY, 'mine');
+            game.physics.p2.enable(mine);
+            mine.body.mass = 10;
+            mine.body.fixedRotation = true;
+        }
     }
 
-    player = game.add.sprite(4, game.world.height / 2, 'dude');
-    game.physics.p2.enable(player);
-    player.body.collideWorldBounds = true;
-    player.body.mass = 0.1;
-    player.body.onBeginContact.add(mineHit, this);
+    healthText = game.add.text(16, 16, healthTextString(), { fontSize: '12px', fill: '#fff' });
 
-    damageText = game.add.text(16, 16, damageTextString(), { fontSize: '32px', fill: '#fff' });
-
-    //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
 }
 
-function mineHit (body, shapeA, shapeB, equation) {
-    damage += 10;
-    damageText.text = damageTextString();
+function spriteContact(body, shapeA, shapeB, equation) {
+    if (body.sprite === door) {
+        healthText.text = 'You made it!';
+        running = false;
+    } else { // A mine
+        health = Math.max(health - 10, 0);
+        if (health == 0) {
+            healthText.text = 'Game over';
+            running = false;
+            mines.forEach(function(mine) {
+                mine.alpha = 1;
+            });
+        } else {
+            healthText.text = healthTextString();
+        }
+    }
     player.alpha = 1;
 }
 
 function update() {
-
-    var moveAmt = 100;
+    var moveAmt = 200;
     player.body.setZeroVelocity();
 
-    var moved = false;
+    if (running) {
+        var moved = false;
 
-    if (cursors.left.isDown) {
-        player.body.moveLeft(moveAmt);
-        moved = true;
-    }
-    if (cursors.right.isDown) {
-        player.body.moveRight(moveAmt);
-        moved = true;
-    }
-    if (cursors.up.isDown) {
-        player.body.moveUp(moveAmt);
-        moved = true;
-    }
-    if (cursors.down.isDown) {
-        player.body.moveDown(moveAmt);
-        moved = true;
-    }
+        if (cursors.left.isDown) {
+            player.body.moveLeft(moveAmt);
+            moved = true;
+        }
+        if (cursors.right.isDown) {
+            player.body.moveRight(moveAmt);
+            moved = true;
+        }
+        if (cursors.up.isDown) {
+            player.body.moveUp(moveAmt);
+            moved = true;
+        }
+        if (cursors.down.isDown) {
+            player.body.moveDown(moveAmt);
+            moved = true;
+        }
 
-    if (moved) {
-        player.alpha = 0;
-    }
+        if (moved) {
+            player.alpha = 0;
+        }
 
-    mines.forEach(function(mine) {
-        var dx = (mine.x - player.x);
-        var dx2 = dx * dx;
-        var dy = (mine.y - player.y);
-        var dy2 = dy * dy;
-        var ds = Math.sqrt(dx2 + dy2);
-        var thresh = 100;
-        mine.alpha = 1.0 - Math.min(thresh, ds) / thresh;
-    });
+        mines.forEach(function(mine) {
+            var ds = spriteDistance(mine, player.x, player.y);
+            var thresh = 100;
+            mine.alpha = 1.0 - Math.min(thresh, ds) / thresh;
+        });
+    }
 }
 
-function damageTextString() {
-    return 'Damage: ' + damage;
+function spriteDistance(sprite, x, y) {
+    return distance(sprite.x, sprite.y, x, y);
+}
+
+function distance(x1, y1, x2, y2) {
+    var dx = x2 - x1;
+    var dx2 = dx * dx;
+    var dy = y2 - y1;
+    var dy2 = dy * dy;
+    return Math.sqrt(dx2 + dy2);
+}
+
+function nearestMineDistance(x, y) {
+    var minD = 100000;
+    mines.forEach(function(mine) {
+        var ds = spriteDistance(mine, x, y);
+        if (ds < minD) {
+            minD = ds;
+        }
+    });
+    return minD;
+}
+
+function healthTextString() {
+    return 'Health: ' + health + '%';
 }
 </script>
 
-<p>Move the guy to the exit while avoiding the obstacles, which appear
-as you near them.</p>
 </body>
 </html>
