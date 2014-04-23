@@ -43,7 +43,6 @@ function create() {
     spacebar.onDown.add(toggleAnimation, this);
 
     player.animations.add('twinkle', [0, 1, 2, 1]);
-    player.animations.add('twinkle2', [0, 2]);
 }
 
 function toggleAnimation() {
@@ -51,7 +50,7 @@ function toggleAnimation() {
         player.animations.stop();
         animating = false;
     } else {
-        player.animations.play('twinkle2', 6, true);
+        player.animations.play('twinkle', 6, true);
         animating = true;
     }
 }
