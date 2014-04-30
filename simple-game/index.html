@@ -20,8 +20,11 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
     preload: preload, create: create, update: update
 });
 
+var playerImages = ['wizard.png', 'dude.png'];
+var imgIdx = Math.floor(Math.random() * 2);
+
 function preload() {
-    game.load.image('dude', 'assets/dude.png');
+    game.load.image('dude', 'assets/' + playerImages[imgIdx]);
 }
 
 var player;
