@@ -84,7 +84,7 @@ function spriteContact(body, shapeA, shapeB, equation) {
         running = false;
     } else { // A mine
         health = Math.max(health - 10, 0);
-        if (health == 0) {
+        if (health === 0) {
             healthText.text = 'Game over';
             running = false;
             mines.forEach(function(mine) {
@@ -139,10 +139,8 @@ function spriteDistance(sprite, x, y) {
 
 function distance(x1, y1, x2, y2) {
     var dx = x2 - x1;
-    var dx2 = dx * dx;
     var dy = y2 - y1;
-    var dy2 = dy * dy;
-    return Math.sqrt(dx2 + dy2);
+    return Math.sqrt(dx * dx + dy * dy);
 }
 
 function nearestMineDistance(x, y) {
