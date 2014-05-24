@@ -1,67 +1,64 @@
 <!doctype html> 
 <html lang="en"> 
-<head> 
-	<meta charset="UTF-8" />
-    <title>Simple Game</title>
-	<script type="text/javascript" src="js/phaser.min.js"></script>
-    <style type="text/css">
-        body {
-            margin: 1em;
-        }
-    </style>
-</head>
-<body>
+    <head> 
+        <meta charset="UTF-8" />
+        <title>Simple Game</title>
+        <script type="text/javascript" src="js/phaser.min.js"></script>
+        <style type="text/css">
+            body {
+                margin: 1em;
+            }
+        </style>
+    </head>
+    <body>
 
-<h1>Simple Game</h1>
+        <h1>Simple Game</h1>
 
-<script type="text/javascript">
+        <script type="text/javascript">
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
-    preload: preload, create: create, update: update
-});
+            var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
+                preload: preload, create: create, update: update
+            });
 
-var playerImages = ['wizard.png', 'dude.png'];
-var imgIdx = Math.floor(Math.random() * 2);
+            function preload() {
+                game.load.image('dude', 'assets/' + 'dude.png');
+            }
 
-function preload() {
-    game.load.image('dude', 'assets/' + playerImages[imgIdx]);
-}
+            var player;
+            var cursors;
+            var running = true;
 
-var player;
-var cursors;
-var running = true;
+            function create() {
+                game.stage.backgroundColor = '303030';
+                game.physics.startSystem(Phaser.Physics.P2JS);
 
-function create() {
-    game.stage.backgroundColor = '303030';
-    game.physics.startSystem(Phaser.Physics.P2JS);
+                player = game.add.sprite(40, game.world.height / 2, 'dude');
+                game.physics.p2.enable(player);
 
-    player = game.add.sprite(40, game.world.height / 2, 'dude');
-    game.physics.p2.enable(player);
+                cursors = game.input.keyboard.createCursorKeys();
+            }
 
-    cursors = game.input.keyboard.createCursorKeys();
-}
+            function update() {
+                var moveAmt = 200;
+                player.body.setZeroVelocity();
 
-function update() {
-    var moveAmt = 200;
-    player.body.setZeroVelocity();
+                if (running) {
+                    if (cursors.left.isDown) {
+                        player.body.moveLeft(moveAmt);
+                    }
+                    if (cursors.right.isDown) {
+                        player.body.moveRight(moveAmt);
+                    }
+                    if (cursors.up.isDown) {
+                        player.body.moveUp(moveAmt);
+                    }
+                    if (cursors.down.isDown) {
+                        player.body.moveDown(moveAmt);
+                    }
+                }
+            }
 
-    if (running) {
-        if (cursors.left.isDown) {
-            player.body.moveLeft(moveAmt);
-        }
-        if (cursors.right.isDown) {
-            player.body.moveRight(moveAmt);
-        }
-        if (cursors.up.isDown) {
-            player.body.moveUp(moveAmt);
-        }
-        if (cursors.down.isDown) {
-            player.body.moveDown(moveAmt);
-        }
-    }
-}
+        </script>
 
-</script>
-
-</body>
+    </body>
 </html>
