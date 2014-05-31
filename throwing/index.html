@@ -1,0 +1,88 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+    <title>Throwing a Ball</title>
+	<script type="text/javascript" src="js/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 1em;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Throwing a Ball</h1>
+<p>When you press the space bar, this program “throws a ball” and destroys
+    the enemy. Reload the page afterward to start again.</p>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
+    preload: preload, create: create, update: update
+});
+
+function preload() {
+    game.load.image('Player', 'assets/player.png');
+    game.load.image('Ball',   'assets/player.png'); // Add a new image
+    game.load.image('Enemy',  'assets/player.png'); // Add a new image
+}
+
+var player;
+var enemy;
+var ball;
+var cursors;
+var running = true;
+
+function create() {
+    game.stage.backgroundColor = 'd0d0d0';
+    game.physics.startSystem(Phaser.Physics.P2JS);
+
+    player = game.add.sprite(100, game.world.height / 2, 'Player');
+    enemy  = game.add.sprite(700, game.world.height / 2, 'Enemy');
+    game.physics.p2.enable(player);
+    game.physics.p2.enable(enemy);
+
+    cursors = game.input.keyboard.createCursorKeys();
+    throwKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    throwKey.onDown.add(throwBall, this);
+}
+
+function throwBall() {
+    ball = game.add.sprite(player.body.x + 200, player.body.y, 'Ball');
+    game.physics.p2.enable(ball);
+    ball.body.onBeginContact.add(spriteContact, this);
+    ball.body.moveRight(300);
+}
+
+function update() {
+    var moveAmt = 200;
+    player.body.setZeroVelocity();
+
+    if (running) {
+        if (cursors.left.isDown) {
+            player.body.moveLeft(moveAmt);
+        }
+        if (cursors.right.isDown) {
+            player.body.moveRight(moveAmt);
+        }
+        if (cursors.up.isDown) {
+            player.body.moveUp(moveAmt);
+        }
+        if (cursors.down.isDown) {
+            player.body.moveDown(moveAmt);
+        }
+    }
+}
+
+function spriteContact(body, shapeA, shapeB, equation) {
+    if (body.sprite === enemy) {
+        ball.kill();
+        enemy.kill();
+    }
+}
+
+</script>
+
+</body>
+</html>
