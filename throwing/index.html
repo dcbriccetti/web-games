@@ -53,6 +53,7 @@ function throwBall() {
     game.physics.p2.enable(ball);
     ball.body.onBeginContact.add(spriteContact, this);
     ball.body.moveRight(300);
+    ball.body.moveUp(30);
 }
 
 function update() {
