@@ -40,7 +40,7 @@ var health = 100;
 var healthText;
 var mines;
 var running = true;
-var numMines = 60;
+var numMines = 10;
 
 function create() {
     game.stage.backgroundColor = '303030';
@@ -60,6 +60,14 @@ function create() {
     door.body.mass = 10000;
     door.body.fixedRotation = true;
 
+    createMines();
+
+    healthText = game.add.text(16, 16, healthTextString(), { fontSize: '12px', fill: '#fff' });
+
+    cursors = game.input.keyboard.createCursorKeys();
+}
+
+function createMines() {
     mines = game.add.group();
 
     for (var i = 0; i < numMines; i++) {
@@ -72,16 +80,15 @@ function create() {
             mine.body.fixedRotation = true;
         }
     }
-
-    healthText = game.add.text(16, 16, healthTextString(), { fontSize: '12px', fill: '#fff' });
-
-    cursors = game.input.keyboard.createCursorKeys();
 }
 
 function spriteContact(body, shapeA, shapeB, equation) {
     if (body.sprite === door) {
         healthText.text = 'You made it!';
-        running = false;
+        mines.destroy();
+        numMines *= 1.25;
+        createMines();
+        player.reset(50, 50);
     } else { // A mine
         health = Math.max(health - 10, 0);
         if (health === 0) {
