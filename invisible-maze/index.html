@@ -3,7 +3,6 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Invisible Player Escapes Maze</title>
-    <audio id="ow" src="assets/ow.wav" preload="auto"></audio>
     <script type="text/javascript" src="js/phaser.min.js"></script>
     <style type="text/css">
         body {
@@ -32,6 +31,7 @@ function preload() {
     game.load.image('mine', 'assets/mine.png');
     game.load.image('dude', 'assets/dude.png');
     game.load.image('door', 'assets/door.png');
+    game.load.audio('ow', 'assets/ow.wav');
 }
 
 var player;
@@ -45,8 +45,10 @@ var numMines = 10;
 var level = 1;
 var playerStartX;
 var playerStartY;
+var ow;
 
 function create() {
+    ow = game.add.audio('ow');
     game.stage.backgroundColor = '303030';
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.x = 0;
@@ -97,8 +99,6 @@ function spriteContact(body, shapeA, shapeB, equation) {
         level++;
         healthText.text = statusString();
     } else { // A mine
-        var ow = document.getElementById("ow")
-        ow.load();
         ow.play();
         health = Math.max(health - 10, 0);
         if (health === 0) {
