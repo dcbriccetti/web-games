@@ -63,6 +63,7 @@ function create() {
     door.body.mass = 10000;
     door.body.fixedRotation = true;
 
+    mines = game.add.group();
     createMines();
 
     healthText = game.add.text(16, 16, statusString(), { fontSize: '12px', fill: '#fff' });
@@ -71,8 +72,6 @@ function create() {
 }
 
 function createMines() {
-    mines = game.add.group();
-
     for (var i = 0; i < numMines; i++) {
         var newX = 20 + Math.random() * (game.world.width - 40);
         var newY = 20 + Math.random() * (game.world.height - 40);
@@ -87,7 +86,7 @@ function createMines() {
 
 function spriteContact(body, shapeA, shapeB, equation) {
     if (body.sprite === door) {
-        mines.destroy();
+        mines.removeAll(true);
         numMines *= 1.25;
         player.reset(playerStartX, playerStartY);
         createMines();
