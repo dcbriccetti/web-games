@@ -38,8 +38,8 @@ function create() {
     game.stage.backgroundColor = 'd0d0d0';
     game.physics.startSystem(Phaser.Physics.P2JS);
 
-    player = game.add.sprite(150, game.world.height / 2, 'Player');
-    enemy  = game.add.sprite(700, game.world.height / 2, 'Enemy');
+    player = game.add.sprite(150, game.world.centerY, 'Player');
+    enemy  = game.add.sprite(game.world.width - 100, game.world.centerY, 'Enemy');
     game.physics.p2.enable(player);
     game.physics.p2.enable(enemy);
 

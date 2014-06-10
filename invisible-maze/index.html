@@ -50,7 +50,7 @@ function create() {
     game.physics.p2.gravity.y = 0;
 
     playerStartX = 40;
-    playerStartY = game.world.height / 2;
+    playerStartY = game.world.centerY;
     player = game.add.sprite(playerStartX, playerStartY, 'dude');
     game.physics.p2.enable(player);
     player.body.collideWorldBounds = true;
@@ -58,7 +58,7 @@ function create() {
     player.body.fixedRotation = true;
     player.body.onBeginContact.add(spriteContact, this);
 
-    door = game.add.sprite(game.world.width - 12, game.world.height / 2 - 50, 'door');
+    door = game.add.sprite(game.world.width - 12, game.world.centerY, 'door');
     game.physics.p2.enable(door);
     door.body.mass = 10000;
     door.body.fixedRotation = true;
