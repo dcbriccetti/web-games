@@ -8,7 +8,8 @@
 <body>
 
 <h1>Shooting Particles</h1>
-<p>When you press the space bar, this program shoots several projectiles.</p>
+<p>When you press the space bar, this program shoots several projectiles.
+Rotate with the left and right arrows.</p>
 
 <script type="text/javascript">
 
@@ -70,12 +71,6 @@ function update() {
         }
         if (cursors.right.isDown) {
             player.angle += 5;
-        }
-        if (cursors.up.isDown) {
-            player.body.moveUp(moveAmt);
-        }
-        if (cursors.down.isDown) {
-            player.body.moveDown(moveAmt);
         }
     }
     
