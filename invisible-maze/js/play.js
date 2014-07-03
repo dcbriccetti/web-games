@@ -1,18 +1,11 @@
 
-var mainState = {
-    level: 1,
-    health: 100,
-    running: true,
+var playState = {
     numMines: 60,
 
-    preload: function() {
-        game.load.image('mine', 'assets/mine.png');
-        game.load.image('dude', 'assets/dude.png');
-        game.load.image('door', 'assets/door.png');
-        game.load.audio('ow',   'assets/ow.wav');
-    },
-            
     create: function() {
+        this.health = 100;
+        this.level = 1;
+        this.running = true;
         this.ow = game.add.audio('ow');
         game.stage.backgroundColor = '303030';
         game.physics.startSystem(Phaser.Physics.P2JS);
@@ -105,14 +98,15 @@ var mainState = {
             this.ow.play();
             this.health = Math.max(this.health - 10, 0);
             if (this.health === 0) {
-                this.healthText.text = 'Game over';
                 this.running = false;
                 this.mines.forEach(function(mine) {
                     mine.alpha = 1;
                 });
-            } else {
-                this.healthText.text = this.statusString();
+                game.time.events.add(2000, function() {
+                    game.state.start('menu');
+                }, this);
             }
+            this.healthText.text = this.statusString();
         }
         this.player.alpha = 1;
     },
@@ -142,8 +136,4 @@ var mainState = {
     statusString: function() {
         return 'Health: ' + this.health + '%   Level: ' + this.level;
     }
-}
-
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'gameDiv');
-game.state.add('main', mainState);
-game.state.start('main');
+};
