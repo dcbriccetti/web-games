@@ -76,8 +76,8 @@ var mainState = {
             
     createMines: function() {
         for (var i = 0; i < numMines; i++) {
-            var newX = 20 + Math.random() * (game.world.width - 40);
-            var newY = 20 + Math.random() * (game.world.height - 40);
+            var newX = game.rnd.integerInRange(20, game.world.width  - 40);
+            var newY = game.rnd.integerInRange(20, game.world.height - 40);
             if (this.spriteDistance(player, newX, newY) > 50 &&
                     this.nearestMineDistance(newX, newY) > 50) {
                 var mine = mines.create(newX, newY, 'mine');
