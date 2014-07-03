@@ -21,7 +21,7 @@ var mainState = {
         player.body.collideWorldBounds = true;
         player.body.mass = 1;
         player.body.fixedRotation = true;
-        player.body.onBeginContact.add(spriteContact, this);
+        player.body.onBeginContact.add(this.spriteContact, this);
 
         door = game.add.sprite(game.world.width - 12, game.world.centerY, 'door');
         game.physics.p2.enable(door);
@@ -29,9 +29,10 @@ var mainState = {
         door.body.fixedRotation = true;
 
         mines = game.add.group();
-        createMines();
+        this.createMines();
 
-        healthText = game.add.text(16, 16, statusString(), { fontSize: '12px', fill: '#fff' });
+        healthText = game.add.text(16, 16, this.statusString(),
+            { fontSize: '12px', fill: '#fff' });
 
         cursors = game.input.keyboard.createCursorKeys();
     },
@@ -64,12 +65,77 @@ var mainState = {
                 player.alpha = 0;
             }
 
+            var state = this;
             mines.forEach(function(mine) {
-                var ds = spriteDistance(mine, player.x, player.y);
+                var ds = state.spriteDistance(mine, player.x, player.y);
                 var thresh = 100;
                 mine.alpha = 1.0 - Math.min(thresh, ds) / thresh;
             });
         }
+    },
+            
+    createMines: function() {
+        for (var i = 0; i < numMines; i++) {
+            var newX = 20 + Math.random() * (game.world.width - 40);
+            var newY = 20 + Math.random() * (game.world.height - 40);
+            if (this.spriteDistance(player, newX, newY) > 50 &&
+                    this.nearestMineDistance(newX, newY) > 50) {
+                var mine = mines.create(newX, newY, 'mine');
+                game.physics.p2.enable(mine);
+                mine.body.mass = 10;
+                mine.body.fixedRotation = true;
+            }
+        }
+    },
+
+    spriteContact: function(body, shapeA, shapeB, equation) {
+        if (body.sprite === door) {
+            mines.removeAll(true);
+            numMines *= 1.25;
+            player.reset(playerStartX, playerStartY);
+            createMines();
+            level++;
+            healthText.text = this.statusString();
+        } else { // A mine
+            ow.play();
+            health = Math.max(health - 10, 0);
+            if (health === 0) {
+                healthText.text = 'Game over';
+                running = false;
+                mines.forEach(function(mine) {
+                    mine.alpha = 1;
+                });
+            } else {
+                healthText.text = this.statusString();
+            }
+        }
+        player.alpha = 1;
+    },
+
+    spriteDistance: function(sprite, x, y) {
+        return this.distance(sprite.x, sprite.y, x, y);
+    },
+
+    distance: function(x1, y1, x2, y2) {
+        var dx = x2 - x1;
+        var dy = y2 - y1;
+        return Math.sqrt(dx * dx + dy * dy);
+    },
+
+    nearestMineDistance: function(x, y) {
+        var minD = 100000;
+        var state = this;
+        mines.forEach(function(mine) {
+            var ds = state.spriteDistance(mine, x, y);
+            if (ds < minD) {
+                minD = ds;
+            }
+        });
+        return minD;
+    },
+
+    statusString: function() {
+        return 'Health: ' + health + '%   Level: ' + level;
     }
 }
 
@@ -89,65 +155,3 @@ var level = 1;
 var playerStartX;
 var playerStartY;
 var ow;
-
-function createMines() {
-    for (var i = 0; i < numMines; i++) {
-        var newX = 20 + Math.random() * (game.world.width - 40);
-        var newY = 20 + Math.random() * (game.world.height - 40);
-        if (spriteDistance(player, newX, newY) > 50 && nearestMineDistance(newX, newY) > 50) {
-            var mine = mines.create(newX, newY, 'mine');
-            game.physics.p2.enable(mine);
-            mine.body.mass = 10;
-            mine.body.fixedRotation = true;
-        }
-    }
-}
-
-function spriteContact(body, shapeA, shapeB, equation) {
-    if (body.sprite === door) {
-        mines.removeAll(true);
-        numMines *= 1.25;
-        player.reset(playerStartX, playerStartY);
-        createMines();
-        level++;
-        healthText.text = statusString();
-    } else { // A mine
-        ow.play();
-        health = Math.max(health - 10, 0);
-        if (health === 0) {
-            healthText.text = 'Game over';
-            running = false;
-            mines.forEach(function(mine) {
-                mine.alpha = 1;
-            });
-        } else {
-            healthText.text = statusString();
-        }
-    }
-    player.alpha = 1;
-}
-
-function spriteDistance(sprite, x, y) {
-    return distance(sprite.x, sprite.y, x, y);
-}
-
-function distance(x1, y1, x2, y2) {
-    var dx = x2 - x1;
-    var dy = y2 - y1;
-    return Math.sqrt(dx * dx + dy * dy);
-}
-
-function nearestMineDistance(x, y) {
-    var minD = 100000;
-    mines.forEach(function(mine) {
-        var ds = spriteDistance(mine, x, y);
-        if (ds < minD) {
-            minD = ds;
-        }
-    });
-    return minD;
-}
-
-function statusString() {
-    return 'Health: ' + health + '%   Level: ' + level;
-}
