@@ -78,15 +78,19 @@ var playState = {
             var newY = game.rnd.integerInRange(20, game.world.height - 40);
             if (this.spriteDistance(this.player, newX, newY) > 50 &&
                     this.nearestMineDistance(newX, newY) > 50) {
-                var mine = this.mines.create(newX, newY, 'mine');
+                var mine = this.mines.create(newX, newY, 'shock');
                 game.physics.p2.enable(mine);
+                mine.animations.add('zap', [0, 1, 2, 3]);
+                mine.animations.play('zap', 7, true);
                 mine.body.mass = 10;
-                mine.body.fixedRotation = true;
             }
         }
     },
 
     spriteContact: function(body, shapeA, shapeB, equation) {
+        if (body === null) // This happened, but doc doesn't say why
+            return;
+        
         if (body.sprite === this.door) {
             this.mines.removeAll(true);
             this.numMines *= 1.25;
