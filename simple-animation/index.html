@@ -28,7 +28,6 @@ function preload() {
 
 var player;
 var cursors;
-var running = true;
 var animating = false;
 
 function create() {
@@ -59,19 +58,17 @@ function update() {
     var moveAmt = 200;
     player.body.setZeroVelocity();
 
-    if (running) {
-        if (cursors.left.isDown) {
-            player.body.moveLeft(moveAmt);
-        }
-        if (cursors.right.isDown) {
-            player.body.moveRight(moveAmt);
-        }
-        if (cursors.up.isDown) {
-            player.body.moveUp(moveAmt);
-        }
-        if (cursors.down.isDown) {
-            player.body.moveDown(moveAmt);
-        }
+    if (cursors.left.isDown) {
+        player.body.moveLeft(moveAmt);
+    }
+    if (cursors.right.isDown) {
+        player.body.moveRight(moveAmt);
+    }
+    if (cursors.up.isDown) {
+        player.body.moveUp(moveAmt);
+    }
+    if (cursors.down.isDown) {
+        player.body.moveDown(moveAmt);
     }
 }
 
