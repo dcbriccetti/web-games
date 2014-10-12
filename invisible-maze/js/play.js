@@ -1,6 +1,6 @@
 
 var playState = {
-    numMines: 60,
+    numMines: 30,
 
     create: function() {
         this.health = 100;
@@ -76,8 +76,8 @@ var playState = {
         for (var i = 0; i < this.numMines; i++) {
             var newX = game.rnd.integerInRange(20, game.world.width  - 40);
             var newY = game.rnd.integerInRange(20, game.world.height - 40);
-            if (this.spriteDistance(this.player, newX, newY) > 50 &&
-                    this.nearestMineDistance(newX, newY) > 50) {
+            if (this.spriteDistance(this.player, newX, newY) > 70 &&
+                    this.nearestMineDistance(newX, newY) > 70) {
                 var mine = this.mines.create(newX, newY, 'shock');
                 game.physics.p2.enable(mine);
                 mine.animations.add('zap', [0, 1, 2, 3]);
