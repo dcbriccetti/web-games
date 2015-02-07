@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Minesweeper Helper</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="js/libs/jquery/jquery.js"></script>
+        <script src="js/mshelper.js"></script>
+        <style>
+            #content {
+                width: 800px;
+                margin: 0 auto;
+            }
+            .grid {
+              border: thin solid black;
+              border-spacing: 0;
+            }
+            .grid td {
+              border: thin solid gray;
+              width: 2em;
+              height: 2em;
+              text-align: center;
+            }
+            .ok {
+                background-color: green;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <p></p>
+            <table id="grid" class="grid"></table>
+        </div>
+        <script>
+            MsHelper.init();
+            MsHelper.build();
+        </script>
+    </body>
+</html>
