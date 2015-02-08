@@ -7,9 +7,16 @@
         <script src="js/libs/jquery/jquery.js"></script>
         <script src="js/mshelper.js"></script>
         <style>
+            #heading {
+                font-size: 150%;
+            }
+            #heading2 {
+                margin-top: 2em;
+                font-size: 120%;
+            }
             #content {
+                margin-left: 1em;
                 width: 800px;
-                margin: 0 auto;
             }
             .grid {
               border: thin solid black;
@@ -21,15 +28,46 @@
               height: 2em;
               text-align: center;
             }
-            .ok {
+            .satisfied {
                 background-color: green;
+            }
+            #numbers {
+                margin-top: 1em;
             }
         </style>
     </head>
     <body>
         <div id="content">
-            <p></p>
+            <p id="heading">Minesweeper Helper</p>
             <table id="grid" class="grid"></table>
+            <table id="numbers">
+                <tr><td>Mines placed:</td><td id="minesPlaced"></td></tr>
+                <tr><td>Criteria satisfied:</td><td id="criteriaSatisfied"></td></tr>
+                <tr><td>Finished:</td><td id="finished"></td></tr>
+            </table>
+            <p id="heading2">What’s All This, Then?</p>
+            <img src="assets/mensa-book.jpg" alt="Photo of Mensa book">
+
+            <p>Some years back I acquired the book 
+            <cite>Mensa Challenge Your Brain Math & Logic Puzzles</cite>. 
+            Recently I started 
+            working out these Minesweeper puzzles by hand, on paper. After
+            a lot of marking and erasing, I decided to create a tool that I
+            could use to explore possible solutions without having to remember or 
+            mark a lot of state. (Perhaps if I were smarter, the
+            answers would simply reveal themselves to me, without any 
+            messing around.)
+            At the moment this program always shows Puzzle 6 from the book,
+            but we’ll see where it goes from here.</p>
+
+            <p>Here is the <a href="https://github.com/dcbriccetti/web-games/tree/master/minesweeper-helper">
+            source code</a>.</p>
+
+            <p>I’m not a lawyer, 
+            but I did take a Coursera course on copyright.
+            Based on what I learned, I believe my photograph of a page of the
+            book, and my use of Puzzle 6 fall under 
+            <a href="https://en.wikipedia.org/wiki/Fair_use">Fair Use.</a></p>
         </div>
         <script>
             MsHelper.init();
