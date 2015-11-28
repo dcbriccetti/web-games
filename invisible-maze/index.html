@@ -3,12 +3,8 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Invisible Player Escapes Maze</title>
-    <script type="text/javascript" src="js/phaser.min.js"></script>
-    <script type="text/javascript" src="js/load.js"></script>
-    <script type="text/javascript" src="js/menu.js"></script>
-    <script type="text/javascript" src="js/play.js"></script>
-    <script type="text/javascript" src="js/game.js"></script>
-    </head>
+    <script type="text/javascript" src="js/system.js"></script>
+</head>
 <body>
 
 <h1>Invisible Player Escapes Maze</h1>
@@ -20,5 +16,10 @@ hit obstacles.
 <a href="https://github.com/dcbriccetti/web-games/tree/master/invisible-maze">Source code</a>
 </p>
 <div id="gameDiv"> </div>
+<script type="text/javascript">
+    System.import('js/phaser.min.js').then(function() {
+        System.import('js/game.js');
+    });
+</script>
 </body>
 </html>
