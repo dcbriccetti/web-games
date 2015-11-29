@@ -2,12 +2,12 @@
 <html lang="en"> 
     <head> 
         <meta charset="UTF-8" />
-        <title>Simple Game</title>
+        <title>Dude Invaders</title>
         <script type="text/javascript" src="js/phaser.min.js"></script>
     </head>
     <body>
 
-        <h1>Simple Game</h1>
+        <h1>Dude Invaders</h1>
 
         <script type="text/javascript">
 
@@ -16,13 +16,11 @@
             });
 
             function preload() {
-                game.load.image('dude', 'assets/' + 'dude.png');
+                game.load.image('dude', 'assets/dude.png');
             }
 
-            var players = [];
             var player;
             var cursors;
-            var running = true;
 
             function create() {
                 game.stage.backgroundColor = '303030';
@@ -30,7 +28,6 @@
 
                 for (var x = 0; x < 10; ++x) {
                     for (var y = 0; y < 4; ++y) {
-                        var margin = 40;
                         player = game.add.sprite(x * 60 + 40, y * 60 + 40, 'dude');
                         game.physics.p2.enable(player);
                     }
@@ -43,19 +40,17 @@
                 var moveAmt = 200;
                 player.body.setZeroVelocity();
 
-                if (running) {
-                    if (cursors.left.isDown) {
-                        player.body.moveLeft(moveAmt);
-                    }
-                    if (cursors.right.isDown) {
-                        player.body.moveRight(moveAmt);
-                    }
-                    if (cursors.up.isDown) {
-                        player.body.moveUp(moveAmt);
-                    }
-                    if (cursors.down.isDown) {
-                        player.body.moveDown(moveAmt);
-                    }
+                if (cursors.left.isDown) {
+                    player.body.moveLeft(moveAmt);
+                }
+                if (cursors.right.isDown) {
+                    player.body.moveRight(moveAmt);
+                }
+                if (cursors.up.isDown) {
+                    player.body.moveUp(moveAmt);
+                }
+                if (cursors.down.isDown) {
+                    player.body.moveDown(moveAmt);
                 }
             }
 
