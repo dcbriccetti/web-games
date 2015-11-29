@@ -5,11 +5,11 @@ var Maze = {
 Maze.Preloader = function() {};
 Maze.Preloader.prototype = {
     preload: function() {
-        game.load.image('dude', 'assets/dude.png');
-        game.load.image('door', 'assets/door.png');
-        game.load.audio('ow',   'assets/ow.wav');
+        this.load.image('dude', 'assets/dude.png');
+        this.load.image('door', 'assets/door.png');
+        this.load.audio('ow',   'assets/ow.wav');
         // Lightning art from http://opengameart.org/content/lightning-shock-spell
-        game.load.spritesheet('shock', 'assets/shock.png', 64, 50);
+        this.load.spritesheet('shock', 'assets/shock.png', 64, 50);
     },
     
     create: function() {
@@ -20,24 +20,24 @@ Maze.Preloader.prototype = {
 Maze.MainMenu = function() {};
 Maze.MainMenu.prototype = {
     create: function() {
-        game.stage.backgroundColor = '#00f';
-        var nameLabel = game.add.text(game.world.centerX, -50,
+        this.stage.backgroundColor = '#00f';
+        var nameLabel = this.add.text(this.world.centerX, -50,
             "Invisible Player Escapes Maze", {
                 font: '50px Arial', fill: '#fff'
             });
         nameLabel.anchor.setTo(0.5, 0.5);
-        game.add.tween(nameLabel).to({y: 80}, 1000).start();
+        this.add.tween(nameLabel).to({y: 80}, 1000).start();
 
-        var startLabel = game.add.text(game.world.centerX, 
-            game.world.height - 80,
+        var startLabel = this.add.text(this.world.centerX, 
+            this.world.height - 80,
             "Press space to start", {
                 font: '25px Arial', fill: '#fff'
             });
         startLabel.anchor.setTo(0.5, 0.5);
-        game.add.tween(startLabel).to({angle: -2}, 500).to({angle: 2}, 500).
+        this.add.tween(startLabel).to({angle: -2}, 500).to({angle: 2}, 500).
             loop().start();
         
-        var space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        var space = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         space.onDown.addOnce(this.start, this);
     },
             
@@ -54,33 +54,33 @@ Maze.Game.prototype = {
         this.health = 100;
         this.level = 1;
         this.running = true;
-        this.ow = game.add.audio('ow');
-        game.stage.backgroundColor = '303030';
-        game.physics.startSystem(Phaser.Physics.P2JS);
-        game.physics.p2.gravity.x = 0;
-        game.physics.p2.gravity.y = 0;
+        this.ow = this.add.audio('ow');
+        this.stage.backgroundColor = '303030';
+        this.physics.startSystem(Phaser.Physics.P2JS);
+        this.physics.p2.gravity.x = 0;
+        this.physics.p2.gravity.y = 0;
 
         this.playerStartX = 40;
-        this.playerStartY = game.world.centerY;
-        this.player = game.add.sprite(this.playerStartX, this.playerStartY, 'dude');
-        game.physics.p2.enable(this.player);
+        this.playerStartY = this.world.centerY;
+        this.player = this.add.sprite(this.playerStartX, this.playerStartY, 'dude');
+        this.physics.p2.enable(this.player);
         this.player.body.collideWorldBounds = true;
         this.player.body.mass = 1;
         this.player.body.fixedRotation = true;
         this.player.body.onBeginContact.add(this.spriteContact, this);
 
-        this.door = game.add.sprite(game.world.width - 12, game.world.centerY, 'door');
-        game.physics.p2.enable(this.door);
+        this.door = this.add.sprite(this.world.width - 12, this.world.centerY, 'door');
+        this.physics.p2.enable(this.door);
         this.door.body.mass = 10000;
         this.door.body.fixedRotation = true;
 
-        this.mines = game.add.group();
+        this.mines = this.add.group();
         this.createMines();
 
-        this.healthText = game.add.text(16, 16, this.statusString(),
+        this.healthText = this.add.text(16, 16, this.statusString(),
             { fontSize: '12px', fill: '#fff' });
 
-        cursors = game.input.keyboard.createCursorKeys();
+        cursors = this.input.keyboard.createCursorKeys();
     },
             
     update: function() {
@@ -122,12 +122,12 @@ Maze.Game.prototype = {
             
     createMines: function() {
         for (var i = 0; i < this.numMines; i++) {
-            var newX = game.rnd.integerInRange(20, game.world.width  - 40);
-            var newY = game.rnd.integerInRange(20, game.world.height - 40);
+            var newX = this.rnd.integerInRange(20, this.world.width  - 40);
+            var newY = this.rnd.integerInRange(20, this.world.height - 40);
             if (this.spriteDistance(this.player, newX, newY) > 70 &&
                     this.nearestMineDistance(newX, newY) > 70) {
                 var mine = this.mines.create(newX, newY, 'shock');
-                game.physics.p2.enable(mine);
+                this.physics.p2.enable(mine);
                 mine.animations.add('zap', [0, 1, 2, 3]);
                 mine.animations.play('zap', 7, true);
                 mine.body.mass = 10;
@@ -154,8 +154,8 @@ Maze.Game.prototype = {
                 this.mines.forEach(function(mine) {
                     mine.alpha = 1;
                 });
-                game.time.events.add(2000, function() {
-                    game.state.start('menu');
+                this.time.events.add(2000, function() {
+                    this.state.start('menu');
                 }, this);
             }
             this.healthText.text = this.statusString();
