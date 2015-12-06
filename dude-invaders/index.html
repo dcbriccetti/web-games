@@ -7,7 +7,7 @@
     </head>
     <body>
 
-        <h1>Dude Invaders</h1>
+        <h3>Dude Invaders</h3>
 
         <script type="text/javascript">
 
@@ -16,41 +16,58 @@
             });
 
             function preload() {
-                game.load.image('dude', 'assets/dude.png');
+                game.load.image('dude',  'assets/dude.png');
+                game.load.image('dozer', 'assets/dozer.png');
+                game.load.image('trash', 'assets/trash.png');
             }
 
-            var player;
+            var dozer;
             var cursors;
+            var trash;
 
             function create() {
                 game.stage.backgroundColor = '303030';
                 game.physics.startSystem(Phaser.Physics.P2JS);
 
-                for (var x = 0; x < 10; ++x) {
-                    for (var y = 0; y < 4; ++y) {
-                        player = game.add.sprite(x * 60 + 40, y * 60 + 40, 'dude');
-                        game.physics.p2.enable(player);
-                    }
+                for (var n = 0; n < 40; ++n) {
+                    var x = this.rnd.integerInRange(20, game.world.width  - 40);
+                    var y = this.rnd.integerInRange(20, game.world.height - 40);
+                    var dude = game.add.sprite(x, y, 'dude');
+                    game.physics.p2.enable(dude);
                 }
+                
+                trash = game.add.sprite(game.world.width - 50, game.world.height - 50, 'trash');
+                trash.anchor.setTo(.5);
+                game.physics.p2.enable(trash);
+                trash.body.static = true;
+                trash.body.onBeginContact.add(function(body, shapeA, shapeB, equation) {
+                    if (body.sprite !== dozer)
+                        body.sprite.kill();
+                });
+
+                dozer = game.add.sprite(game.world.width / 2, game.world.height - 250, 'dozer');
+                dozer.anchor.setTo(.5);
+                game.physics.p2.enable(dozer);
+                dozer.body.fixedRotation = true;
 
                 cursors = game.input.keyboard.createCursorKeys();
             }
 
             function update() {
                 var moveAmt = 200;
-                player.body.setZeroVelocity();
+                dozer.body.setZeroVelocity();
 
                 if (cursors.left.isDown) {
-                    player.body.moveLeft(moveAmt);
+                    dozer.body.moveLeft(moveAmt);
                 }
                 if (cursors.right.isDown) {
-                    player.body.moveRight(moveAmt);
+                    dozer.body.moveRight(moveAmt);
                 }
                 if (cursors.up.isDown) {
-                    player.body.moveUp(moveAmt);
+                    dozer.body.moveUp(moveAmt);
                 }
                 if (cursors.down.isDown) {
-                    player.body.moveDown(moveAmt);
+                    dozer.body.moveDown(moveAmt);
                 }
             }
 
