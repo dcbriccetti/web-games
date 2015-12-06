@@ -17,7 +17,7 @@
 
             function preload() {
                 game.load.image('dude',  'assets/dude.png');
-                game.load.image('dozer', 'assets/dozer.png');
+                game.load.image('dozer', 'assets/dozer2.png');
                 game.load.image('trash', 'assets/trash.png');
             }
 
@@ -46,11 +46,12 @@
                 });
 
                 dozer = game.add.sprite(game.world.width / 2, game.world.height - 250, 'dozer');
-                dozer.anchor.setTo(.5);
                 game.physics.p2.enable(dozer);
-                dozer.body.fixedRotation = true;
+                dozer.body.mass = 1000;
 
                 cursors = game.input.keyboard.createCursorKeys();
+                var throwKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+                throwKey.onDown.add(spin, this);
             }
 
             function update() {
@@ -69,6 +70,10 @@
                 if (cursors.down.isDown) {
                     dozer.body.moveDown(moveAmt);
                 }
+            }
+            
+            function spin() {
+                dozer.body.angularVelocity = 10;
             }
 
         </script>
