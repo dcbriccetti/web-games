@@ -16,7 +16,7 @@
             });
 
             function preload() {
-                game.load.image('dude',  'assets/dude.png');
+                game.load.spritesheet('dude', 'assets/DudeSpriteSheet.png', 68, 96);
                 game.load.image('dozer', 'assets/dozer2.png');
                 game.load.image('trash', 'assets/trash.png');
             }
@@ -29,11 +29,13 @@
                 game.stage.backgroundColor = '303030';
                 game.physics.startSystem(Phaser.Physics.P2JS);
 
-                for (var n = 0; n < 40; ++n) {
+                for (var n = 0; n < 20; ++n) {
                     var x = this.rnd.integerInRange(20, game.world.width  - 40);
                     var y = this.rnd.integerInRange(20, game.world.height - 40);
                     var dude = game.add.sprite(x, y, 'dude');
                     game.physics.p2.enable(dude);
+                    dude.animations.add('blow', [0, 1]); // , 2, 3, 4, 5, 6]);
+                    dude.animations.play('blow', 4, true);
                 }
                 
                 trash = game.add.sprite(game.world.width - 50, game.world.height - 50, 'trash');
