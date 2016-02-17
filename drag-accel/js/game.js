@@ -15,31 +15,38 @@ DragAccel.Game.prototype = {
 
     create: function() {
         this.stage.backgroundColor = '0000a0';
-        var player = this.add.sprite(this.world.width / 2, 100, 'UFO');
+        var player = this.add.sprite(this.world.width / 2, 50, 'UFO');
         player.anchor.x = 0.5;
-        player.anchor.y = 0.5;
         this.physics.arcade.enable(player);
         player.body.collideWorldBounds = true;
         player.body.drag.set(this.drag);
         this.player = player;
-        cursors = this.input.keyboard.createCursorKeys();
+        this.cursors = this.input.keyboard.createCursorKeys();
         dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
         dKey.onDown.add(this.handleDButton, this);
     },
 
     update: function() {
-        if (cursors.right.isDown) {
-            this.player.body.acceleration.set(this.acceleration, 0);
-        } else if (cursors.left.isDown) {
-            this.player.body.acceleration.set(-this.acceleration, 0);
-        } else {
-            this.player.body.acceleration.set(0);
+        var xAccel = 0;
+        var yAccel = 0;
+        
+        if (this.cursors.right.isDown) {
+            xAccel = this.acceleration;
+        } else if (this.cursors.left.isDown) {
+            xAccel = -this.acceleration;
         }
+        if (this.cursors.up.isDown) {
+            yAccel = -this.acceleration;
+        } else if (this.cursors.down.isDown) {
+            yAccel = this.acceleration;
+        }
+        this.player.body.acceleration.set(xAccel, yAccel);
     },
     
     render: function() {
+        var accel = this.player.body.acceleration
         game.debug.text(
-            'Acceleration: ' + this.player.body.acceleration + ', drag: ' + this.drag,
+            'Acceleration: ' + accel.x + ", " + accel.y + '; drag: ' + this.drag,
             10, this.world.height - 10);
     },
     
@@ -48,10 +55,10 @@ DragAccel.Game.prototype = {
             this.drag -= 10;
         else
             this.drag += 10;
-        player.body.drag.set(this.drag);
+        this.player.body.drag.set(this.drag);
     }
 };
     
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '');
+var game = new Phaser.Game(1000, 600, Phaser.AUTO, '');
 game.state.add('Game', DragAccel.Game);
 game.state.start('Game');
