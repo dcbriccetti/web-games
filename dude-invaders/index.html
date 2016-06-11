@@ -11,7 +11,11 @@
 
         <script type="text/javascript">
 
-            var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
+            var whacker;
+            var cursors;
+            var trash;
+
+            var game = new Phaser.Game(800, 500, Phaser.AUTO, '', {
                 preload: preload, create: create, update: update
             });
 
@@ -21,20 +25,16 @@
                 game.load.image('trash', 'assets/trash.png');
             }
 
-            var dozer;
-            var cursors;
-            var trash;
-
             function create() {
                 game.stage.backgroundColor = '303030';
                 game.physics.startSystem(Phaser.Physics.P2JS);
 
                 for (var n = 0; n < 20; ++n) {
-                    var x = this.rnd.integerInRange(20, game.world.width  - 40);
-                    var y = this.rnd.integerInRange(20, game.world.height - 40);
+                    var x = game.rnd.integerInRange(20, game.world.width  - 40);
+                    var y = game.rnd.integerInRange(20, game.world.height - 40);
                     var dude = game.add.sprite(x, y, 'dude');
                     game.physics.p2.enable(dude);
-                    dude.animations.add('blow', [0, 1]); // , 2, 3, 4, 5, 6]);
+                    dude.animations.add('blow', [0, 1]);
                     dude.animations.play('blow', 4, true);
                 }
                 
@@ -43,13 +43,13 @@
                 game.physics.p2.enable(trash);
                 trash.body.static = true;
                 trash.body.onBeginContact.add(function(body, shapeA, shapeB, equation) {
-                    if (body.sprite !== dozer)
+                    if (body.sprite !== whacker)
                         body.sprite.kill();
                 });
 
-                dozer = game.add.sprite(game.world.width / 2, game.world.height - 250, 'dozer');
-                game.physics.p2.enable(dozer);
-                dozer.body.mass = 1000;
+                whacker = game.add.sprite(game.world.width / 2, game.world.height - 250, 'dozer');
+                game.physics.p2.enable(whacker);
+                whacker.body.mass = 1000;
 
                 cursors = game.input.keyboard.createCursorKeys();
                 var throwKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -58,24 +58,24 @@
 
             function update() {
                 var moveAmt = 200;
-                dozer.body.setZeroVelocity();
+                whacker.body.setZeroVelocity();
 
                 if (cursors.left.isDown) {
-                    dozer.body.moveLeft(moveAmt);
+                    whacker.body.moveLeft(moveAmt);
                 }
                 if (cursors.right.isDown) {
-                    dozer.body.moveRight(moveAmt);
+                    whacker.body.moveRight(moveAmt);
                 }
                 if (cursors.up.isDown) {
-                    dozer.body.moveUp(moveAmt);
+                    whacker.body.moveUp(moveAmt);
                 }
                 if (cursors.down.isDown) {
-                    dozer.body.moveDown(moveAmt);
+                    whacker.body.moveDown(moveAmt);
                 }
             }
             
             function spin() {
-                dozer.body.angularVelocity = 10;
+                whacker.body.angularVelocity = 10;
             }
 
         </script>
