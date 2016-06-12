@@ -5,28 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>Hear the sound?</div>
+        <h1>How High Can You Hear?</h1>
         <p>Frequency: <span id="freq"></span></p>
-        <script>
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-var oscillator2 = audioCtx.createOscillator();
-var gainNode = audioCtx.createGain();
-gainNode.connect(audioCtx.destination);
-oscillator2.connect(gainNode);
-
-oscillator2.type = 'sawtooth';
-oscillator2.frequency.value = 440; // value in hertz
-oscillator2.start();
-var incr = Math.pow(2, 1/48);
-
-function bump() {
-    oscillator2.frequency.value *= incr;
-    document.getElementById("freq").innerHTML = oscillator2.frequency.value.toFixed(0);
-    if (oscillator2.frequency.value < 20000) {
-        setTimeout(bump, 100);
-    }
-}
-setTimeout(bump, 100);
-        </script>
+        <script src="hearing.js"></script>
     </body>
 </html>
