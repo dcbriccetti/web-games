@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas tutorial</title>
+    <script type="text/javascript">
+        function r(n) {
+            return Math.floor(Math.random() * n);
+        }
+        function draw() {
+            var canvas = document.getElementById('tutorial');
+            var ctx = canvas.getContext('2d');
+            for (var n = 0; n < 100; ++n) {
+                ctx.fillStyle = "rgba(" + r(255) + ", 0, 200, 0.5)";
+                ctx.fillRect(r(450), r(450), 50, 50);
+            }
+        }
+    </script>
+    <style type="text/css">
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body onload="draw();">
+<canvas id="tutorial" width="500" height="500"></canvas>
+</body>
+</html>
