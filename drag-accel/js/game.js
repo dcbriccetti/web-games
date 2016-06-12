@@ -45,8 +45,10 @@ DragAccel.Game.prototype = {
     
     render: function() {
         var accel = this.player.body.acceleration
-        game.debug.text(
-            'Acceleration: ' + accel.x + ", " + accel.y + '; drag: ' + this.drag,
+        var velX  = Math.round(this.player.body.velocity.x)
+        var velY  = Math.round(this.player.body.velocity.y)
+        game.debug.text('Velocity: (' + velX + ', ' + velY + '), ' +
+            'acceleration: ' + accel.x + ", " + accel.y + '; drag: ' + this.drag,
             10, this.world.height - 10);
     },
     
