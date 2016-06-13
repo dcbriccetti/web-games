@@ -44,11 +44,14 @@ DragAccel.Game.prototype = {
     },
     
     render: function() {
-        var accel = this.ship.body.acceleration
+        var accel = this.ship.body.acceleration;
         var velX  = Math.round(this.ship.body.velocity.x)
         var velY  = Math.round(this.ship.body.velocity.y)
-        game.debug.text('Velocity: (' + velX + ', ' + velY + '), ' +
-            'acceleration: ' + accel.x + ", " + accel.y + '; drag: ' + this.drag,
+        var posX  = Math.round(this.ship.body.position.x)
+        var posY  = Math.round(this.ship.body.position.y)
+        game.debug.text('Position: (' + posX + ', ' + posY + '), ' +
+            'velocity: (' + velX + ', ' + velY + '), ' +
+            'acceleration: (' + accel.x + ", " + accel.y + '); drag: ' + this.drag,
             10, this.world.height - 10);
     },
     
