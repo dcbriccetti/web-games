@@ -3,15 +3,17 @@ var DragAccel = {};
 DragAccel.Game = function () {};
 
 DragAccel.Game.prototype = {
+    ship:           null,
+    cursors:        null,
+    dKey:           null,
+    drag:           100,
+    acceleration:   200,
+    oscillator:     null,
+
     preload: function() {
+        this.createOscillator();
         this.load.image('ship', 'assets/UFO.png');
     },
-
-    ship: null,
-    cursors: null,
-    dKey: null,
-    drag: 100,
-    acceleration: 200,
 
     create: function() {
         this.stage.backgroundColor = '0000a0';
@@ -41,6 +43,8 @@ DragAccel.Game.prototype = {
             yAccel = this.acceleration;
         }
         this.ship.body.acceleration.set(xAccel, yAccel);
+        this.oscillator.frequency.value = 65 + 
+            (Math.abs(this.ship.body.velocity.x) + Math.abs(this.ship.body.velocity.y)) / 2;
     },
     
     render: function() {
@@ -61,6 +65,18 @@ DragAccel.Game.prototype = {
         else
             this.drag += 10;
         this.ship.body.drag.set(this.drag);
+    },
+    
+    createOscillator: function() {
+        var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        var oscillator = audioCtx.createOscillator();
+        var gainNode = audioCtx.createGain();
+        gainNode.connect(audioCtx.destination);
+        oscillator.connect(gainNode);
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 65;
+        oscillator.start();
+        this.oscillator = oscillator;
     }
 };
     
