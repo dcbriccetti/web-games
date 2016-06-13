@@ -4,10 +4,10 @@ DragAccel.Game = function () {};
 
 DragAccel.Game.prototype = {
     preload: function() {
-        this.load.image('UFO', 'assets/UFO.png');
+        this.load.image('ship', 'assets/UFO.png');
     },
 
-    player: null,
+    ship: null,
     cursors: null,
     dKey: null,
     drag: 100,
@@ -15,12 +15,12 @@ DragAccel.Game.prototype = {
 
     create: function() {
         this.stage.backgroundColor = '0000a0';
-        var player = this.add.sprite(this.world.width / 2, 50, 'UFO');
-        player.anchor.x = 0.5;
-        this.physics.arcade.enable(player);
-        player.body.collideWorldBounds = true;
-        player.body.drag.set(this.drag);
-        this.player = player;
+        var ship = this.add.sprite(this.world.width / 2, 50, 'ship');
+        ship.anchor.x = 0.5;
+        this.physics.arcade.enable(ship);
+        ship.body.collideWorldBounds = false;
+        ship.body.drag.set(this.drag);
+        this.ship = ship;
         this.cursors = this.input.keyboard.createCursorKeys();
         dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
         dKey.onDown.add(this.handleDButton, this);
@@ -40,13 +40,13 @@ DragAccel.Game.prototype = {
         } else if (this.cursors.down.isDown) {
             yAccel = this.acceleration;
         }
-        this.player.body.acceleration.set(xAccel, yAccel);
+        this.ship.body.acceleration.set(xAccel, yAccel);
     },
     
     render: function() {
-        var accel = this.player.body.acceleration
-        var velX  = Math.round(this.player.body.velocity.x)
-        var velY  = Math.round(this.player.body.velocity.y)
+        var accel = this.ship.body.acceleration
+        var velX  = Math.round(this.ship.body.velocity.x)
+        var velY  = Math.round(this.ship.body.velocity.y)
         game.debug.text('Velocity: (' + velX + ', ' + velY + '), ' +
             'acceleration: ' + accel.x + ", " + accel.y + '; drag: ' + this.drag,
             10, this.world.height - 10);
@@ -57,10 +57,10 @@ DragAccel.Game.prototype = {
             this.drag -= 10;
         else
             this.drag += 10;
-        this.player.body.drag.set(this.drag);
+        this.ship.body.drag.set(this.drag);
     }
 };
     
-var game = new Phaser.Game(1000, 600, Phaser.AUTO, '');
+var game = new Phaser.Game(window.innerWidth - 8 * 2, window.innerHeight * .7);
 game.state.add('Game', DragAccel.Game);
 game.state.start('Game');
