@@ -15,7 +15,6 @@
 ### Activities
 - Walk through a [very simple Web app](https://github.com/dcbriccetti/web-games/tree/master/simple-js/index.html)
 with JavaScript
-  - Add a feature to have the random number update every second
 
 ## Phaser [Sandbox](http://phaser.io/sandbox) Challenges
 
@@ -45,4 +44,8 @@ In NetBeans, create a project using the repository:
 - Double-click index.html
 - Right-click in the large window showing index.html and choose Run File. Your browser should now show
 a simple web app that displays a random number.
+
+## The Simple Web App
+- Add a feature to have the random number update every second
+
 

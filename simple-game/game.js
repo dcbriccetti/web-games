@@ -4,32 +4,30 @@ Simple.Game = function () {};
 
 Simple.Game.prototype = {
     preload: function() {
-        this.load.image('dude', 'assets/' + 'dude.png');
+        this.load.image('dude', 'dude.png');
     },
 
     player: null,
     cursors: null,
 
     create: function() {
-        this.stage.backgroundColor = '0000a0';
-        this.physics.startSystem(Phaser.Physics.P2JS);
+        this.stage.backgroundColor = 'e0e0f0';
+        this.physics.startSystem(Phaser.Physics.ARCADE);
 
         player = this.add.sprite(40, this.world.height / 2, 'dude');
-        this.physics.p2.enable(player);
+        this.physics.enable(player, Phaser.Physics.ARCADE);
+        player.body.drag.set(100);
 
         cursors = this.input.keyboard.createCursorKeys();
     },
 
     update: function() {
-        var moveAmt = 200;
-        player.body.setZeroVelocity();
-
         if (cursors.right.isDown) {
-            player.body.moveRight(moveAmt);
+            player.body.velocity.set(100, 0);
         }
     }
 };
     
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '');
+var game = new Phaser.Game('100', 500);
 game.state.add('Game', Simple.Game);
 game.state.start('Game');
