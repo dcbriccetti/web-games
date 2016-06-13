@@ -48,4 +48,10 @@ a simple web app that displays a random number.
 ## The Simple Web App
 - Add a feature to have the random number update every second
 
-
+## The Simple Phaser Game
+Open the directory called simple-game, and open the index.html within. Run it. Make these improvements:
+- Replace the graphic with one that you draw or find, considering appropriate use
+  - Considering using [Creative Commons Search](https://search.creativecommons.org/)
+- Make the character move in all four directions
+- Change the movement speed
+- Experiment with different `drag` values
