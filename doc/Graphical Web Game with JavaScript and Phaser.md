@@ -58,3 +58,28 @@ Open the directory called simple-game, and open the index.html within. Run it. M
 - Make the character move in all four directions
 - Change the movement speed
 - Experiment with different `drag` values
+
+## Questions, with Answers from Students
+- What is NetBeans?
+A program where you can write code.
+- What is an IDE?
+Integrated development environment (NetBeans, IDEA, Eclipse)
+- What is Phaser?
+Has a sandbox. You can make games. A JavaScript gameing library.
+- What is JavaScript?
+A programming language.
+- What are the names of some functions used in a Phaser program?
+update (game action), preload (loading assets), create (puts things in the world)
+- What are some things about particle emitters that are adjustable?
+Time between emissions, number of emissions, speed
+- How can you call a JavaScript function over and over?
+setTimeout(fn, delayMs)
+- What’s an oscillator?
+Part of a synthesizer. Uses a frequency.
+
+## Homework
+- Brainstorm game ideas
+- Review what we learned
+- Optional
+  - Make some art
+  - Make some music and sound effects
