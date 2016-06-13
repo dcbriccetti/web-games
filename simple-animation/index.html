@@ -34,7 +34,7 @@ function create() {
     game.stage.backgroundColor = 'd0d0d0';
     game.physics.startSystem(Phaser.Physics.P2JS);
 
-    player = game.add.sprite(100, game.world.height / 2, 'star');
+    player = game.add.sprite(100, 0, 'star');
     game.physics.p2.enable(player);
 
     cursors = game.input.keyboard.createCursorKeys();
