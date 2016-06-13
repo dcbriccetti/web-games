@@ -1,5 +1,8 @@
 # Graphical Web Game with JavaScript and Phaser
 
+## Resources
+- [Mozilla Breakout Game Tutorial](https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_breakout_game_Phaser)
+
 ## Session 1
 ### Goals
 - Understand a very simple Web app with JavaScript
