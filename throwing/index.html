@@ -3,7 +3,7 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Throwing a Ball</title>
-    <script type="text/javascript" src="js/phaser.min.js"></script>
+    <script src="../js/phaser.min.js"></script>
 </head>
 <body>
 
@@ -76,7 +76,7 @@ function update() {
 }
 
 function spriteContact(body, shapeA, shapeB, equation) {
-    if (body.sprite !== player) {
+    if (body && body.sprite !== player) {
         body.sprite.kill();
         ball.kill();
     }

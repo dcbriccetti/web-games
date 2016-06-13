@@ -3,7 +3,7 @@
 <head> 
     <meta charset="UTF-8" />
     <title>Shooting Particles</title>
-    <script src="js/phaser.js"></script>
+    <script src="../js/phaser.min.js"></script>
 </head>
 <body>
 
@@ -63,8 +63,6 @@ function throwBall() {
 }
 
 function update() {
-    var moveAmt = 200;
-
     if (running) {
         if (cursors.left.isDown) {
             player.angle -= 5;
