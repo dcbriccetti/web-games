@@ -70,7 +70,8 @@ Open the directory called simple-game, and open the index.html within. Run it. M
 - What is JavaScript?
 - What are the names of some functions used in a Phaser program?
 - What are some things about particle emitters that are adjustable?
-- How can you call a JavaScript function over and over?
+- What is one way to call a JavaScript function over and over, at
+a specified interval?
 - What’s an oscillator?
 
 ## Homework
@@ -91,6 +92,15 @@ Create a program to insert lots of random numbers into the page.
 ## More Phaser
 - Copy the simple-game directory into your own project (separate from the web-games-master project).
 - Add an enemy character
+
+## Questions?
+
+- How did we make lots of random numbers?
+- How can JavaScript code find an HTML element in the page?
+
+# Session 3
+
+## More Phaser, Continued
 - Have the enemy slowly chase the player
 - Add a sound that changes (e.g., raises pitch) as the enemy gets closer
 
