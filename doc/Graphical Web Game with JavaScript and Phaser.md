@@ -92,6 +92,7 @@ Create a program to insert lots of random numbers into the page.
 - Copy the simple-game directory into your own project (separate from the web-games-master project).
 - Add an enemy character
 - Have the enemy slowly chase the player
+- Add a sound that changes (e.g., raises pitch) as the enemy gets closer
 
 ## Breakout
 Let’s look at the breakout tutorial and see if we want to do some of it together.
