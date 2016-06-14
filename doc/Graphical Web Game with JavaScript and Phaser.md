@@ -65,7 +65,7 @@ A program where you can write code.
 - What is an IDE?
 Integrated development environment (NetBeans, IDEA, Eclipse)
 - What is Phaser?
-Has a sandbox. You can make games. A JavaScript gameing library.
+Has a sandbox. You can make games. A JavaScript gaming library.
 - What is JavaScript?
 A programming language.
 - What are the names of some functions used in a Phaser program?
