@@ -1,9 +1,13 @@
 # Graphical Web Game with JavaScript and Phaser
 
 ## Resources
+- [Phaser API Reference](http://phaser.io/docs/2.4.8/)
+- Mozilla Developer Network
+    - [JavaScript Guide](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide)
+    - [Introduction to the Document Object Model (DOM)](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction)
 - [Mozilla Breakout Game Tutorial](https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_breakout_game_Phaser)
 
-## Session 1
+# Session 1
 ### Goals
 - Understand a very simple Web app with JavaScript
 - Become familiar with Phaser via the [sandbox](http://phaser.io/sandbox)
@@ -59,23 +63,15 @@ Open the directory called simple-game, and open the index.html within. Run it. M
 - Change the movement speed
 - Experiment with different `drag` values
 
-## Questions, with Answers from Students
+## Questions
 - What is NetBeans?
-A program where you can write code.
 - What is an IDE?
-Integrated development environment (NetBeans, IDEA, Eclipse)
 - What is Phaser?
-Has a sandbox. You can make games. A JavaScript gaming library.
 - What is JavaScript?
-A programming language.
 - What are the names of some functions used in a Phaser program?
-update (game action), preload (loading assets), create (puts things in the world)
 - What are some things about particle emitters that are adjustable?
-Time between emissions, number of emissions, speed
 - How can you call a JavaScript function over and over?
-setTimeout(fn, delayMs)
 - What’s an oscillator?
-Part of a synthesizer. Uses a frequency.
 
 ## Homework
 - Brainstorm game ideas
@@ -83,3 +79,19 @@ Part of a synthesizer. Uses a frequency.
 - Optional
   - Make some art
   - Make some music and sound effects
+
+
+# Session 2
+
+## Review Previous Questions and Homework
+
+## More JavaScript
+Create a program to insert lots of random numbers into the page.
+
+## More Phaser
+- Copy the simple-game directory into your own project (separate from the web-games-master project).
+- Add an enemy character
+- Have the enemy slowly chase the player
+
+## Breakout
+Let’s look at the breakout tutorial and see if we want to do some of it together.
