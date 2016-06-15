@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Lots of Random Numbers</title>
+        <script>
+            function makeRandoms() {
+                var div = document.getElementById('randoms');
+                for (var n = 1; n <= 20; ++n) {
+                    var p = document.createElement('p');
+                    p.appendChild(document.createTextNode(Math.random()));
+                    div.appendChild(p);
+                }
+            }
+        </script>
+    </head>
+    <body onload="makeRandoms()">
+        <div id="randoms">Here they are:</div>
+    </body>
+</html>
