@@ -102,6 +102,24 @@ Create a program to insert lots of random numbers into the page.
 
 ## More Phaser, Continued
 - Have the enemy slowly chase the player
+- Kill a sprite on collision
+- Rotate a sprite
+
+# Session 4
+
+## Review Questions
+- How did we make the enemy chase the player?
+- How did we handle collisions?
+- How can we make a sprite rotate?
+
+## New Program: Jack Bites the Dust
+- Demo
+- Explain
+
+## Git
+- Install git and clone Dave’s repository
+
+## More Phaser, Continued
 - Add a sound that changes (e.g., raises pitch) as the enemy gets closer
 
 ## Breakout

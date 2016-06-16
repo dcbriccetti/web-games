@@ -26,6 +26,9 @@ Simple.Game.prototype = {
     },
 
     update: function() {
+        function spriteContact(obj1, obj2) {
+            player.kill();
+        }
         var playerVelX = 0;
         var playerVelY = 0;
         var vel = 100;
@@ -46,6 +49,8 @@ Simple.Game.prototype = {
         var yVel = this.velocityDirection(player.body.position.y, 
             enemy.body.position.y) * 50;
         enemy.body.velocity.set(xVel, yVel);
+
+        game.physics.arcade.collide(player, enemy, spriteContact, null, this);
     },
     
     velocityDirection: function(val1, val2) {
