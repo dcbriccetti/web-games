@@ -110,17 +110,19 @@ Create a program to insert lots of random numbers into the page.
 ## Review Questions
 - How did we make the enemy chase the player?
 - How did we handle collisions?
-- How can we make a sprite rotate?
+- How did we make a sprite rotate?
 
 ## New Program: Jack Bites the Dust
 - Demo
 - Explain
+    - Game states
 
-## Git
-- Install git and clone Dave’s repository
+## Animation
+- See the new version of the simple-game for walk-right and walk-left animations. Both animations are in
+the same sprite sheet.
 
-## More Phaser, Continued
-- Add a sound that changes (e.g., raises pitch) as the enemy gets closer
-
-## Breakout
-Let’s look at the breakout tutorial and see if we want to do some of it together.
+## Questions
+- Describe tweeening
+- How do you load and play audio?
+- Describe degrees and radians
+- How do you animatio a sprite?
