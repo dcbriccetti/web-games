@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Simple Animation</title>
     <script src="../js/phaser.min.js"></script>
+    <script src="game.js"></script>
     <style type="text/css">
         body {
             margin: 1em;
@@ -15,64 +16,6 @@
 <h1>Simple Animation</h1>
 <p>This program toggles an animation with the space bar, and lets you move around with the
 cursor keys.</p>
-
-<script type="text/javascript">
-
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
-    preload: preload, create: create, update: update
-});
-
-function preload() {
-    game.load.spritesheet('star', 'assets/stars.png', 200, 200);
-}
-
-var player;
-var cursors;
-var animating = false;
-
-function create() {
-    game.stage.backgroundColor = 'd0d0d0';
-    game.physics.startSystem(Phaser.Physics.P2JS);
-
-    player = game.add.sprite(100, 0, 'star');
-    game.physics.p2.enable(player);
-
-    cursors = game.input.keyboard.createCursorKeys();
-    spacebar = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    spacebar.onDown.add(toggleAnimation, this);
-
-    player.animations.add('twinkle', [0, 1, 2, 1]);
-}
-
-function toggleAnimation() {
-    if (animating) {
-        player.animations.stop();
-        animating = false;
-    } else {
-        player.animations.play('twinkle', 6, true);
-        animating = true;
-    }
-}
-
-function update() {
-    var moveAmt = 200;
-    player.body.setZeroVelocity();
-
-    if (cursors.left.isDown) {
-        player.body.moveLeft(moveAmt);
-    }
-    if (cursors.right.isDown) {
-        player.body.moveRight(moveAmt);
-    }
-    if (cursors.up.isDown) {
-        player.body.moveUp(moveAmt);
-    }
-    if (cursors.down.isDown) {
-        player.body.moveDown(moveAmt);
-    }
-}
-
-</script>
 
 </body>
 </html>
