@@ -93,7 +93,7 @@ Create a program to insert lots of random numbers into the page.
 - Copy the simple-game directory into your own project (separate from the web-games-master project).
 - Add an enemy character
 
-## Questions?
+## Questions
 
 - How did we make lots of random numbers?
 - How can JavaScript code find an HTML element in the page?
