@@ -16,14 +16,15 @@ Simple.Game.prototype = {
 
         player = this.add.sprite(40, this.world.height / 2, 'dude');
         this.physics.enable(player, Phaser.Physics.ARCADE);
-        player.body.drag.set(100);
+        player.body.drag.set(200);
+        player.body.collideWorldBounds = true;
 
         cursors = this.input.keyboard.createCursorKeys();
     },
 
     update: function() {
         if (cursors.right.isDown) {
-            player.body.velocity.set(100, 0);
+            player.body.velocity.set(500, 0);
         }
     }
 };
