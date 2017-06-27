@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript">
+        function draw() {
+            var canvas = document.getElementById('tutorial');
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = "rgb(0, 0, 200)";
+            ctx.fillRect(100, 50, 50, 50);
+        }
+    </script>
+    <style type="text/css">
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body onload="draw();">
+<canvas id="tutorial" width="500" height="500"></canvas>
+</body>
+</html>
