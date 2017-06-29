@@ -1,17 +1,12 @@
-var DragAccel = {};
-
-DragAccel.Game = function () {};
-
-DragAccel.Game.prototype = {
+var dragAccel = {
     ship:           null,
     cursors:        null,
     dKey:           null,
-    drag:           100,
     acceleration:   200,
     oscillator:     null,
 
     preload: function() {
-        this.createOscillator();
+        this.oscillator = this.createOscillator();
         this.load.image('ship', 'assets/UFO.png');
     },
 
@@ -21,7 +16,7 @@ DragAccel.Game.prototype = {
         ship.anchor.x = 0.5;
         this.physics.arcade.enable(ship);
         ship.body.collideWorldBounds = false;
-        ship.body.drag.set(this.drag);
+        ship.body.drag.set(100);
         this.ship = ship;
         this.cursors = this.input.keyboard.createCursorKeys();
         dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
@@ -55,16 +50,17 @@ DragAccel.Game.prototype = {
         var posY  = Math.round(this.ship.body.position.y)
         game.debug.text('Position: (' + posX + ', ' + posY + '), ' +
             'velocity: (' + velX + ', ' + velY + '), ' +
-            'acceleration: (' + accel.x + ", " + accel.y + '); drag: ' + this.drag,
+            'acceleration: (' + accel.x + ", " + accel.y + '); drag: ' + this.ship.body.drag.x,
             10, this.world.height - 10);
     },
     
     handleDButton: function() {
+        var drag = this.ship.body.drag.x;
         if (dKey.shiftKey)
-            this.drag -= 10;
+            drag -= 10;
         else
-            this.drag += 10;
-        this.ship.body.drag.set(this.drag);
+            drag += 10;
+        this.ship.body.drag.set(drag);
     },
     
     createOscillator: function() {
@@ -76,10 +72,10 @@ DragAccel.Game.prototype = {
         oscillator.type = 'sine';
         oscillator.frequency.value = 65;
         oscillator.start();
-        this.oscillator = oscillator;
+        return oscillator;
     }
 };
     
 var game = new Phaser.Game(window.innerWidth - 8 * 2, window.innerHeight * .7);
-game.state.add('Game', DragAccel.Game);
+game.state.add('Game', dragAccel);
 game.state.start('Game');
