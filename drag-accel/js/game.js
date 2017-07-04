@@ -19,8 +19,8 @@ var dragAccel = {
         ship.body.drag.set(100);
         this.ship = ship;
         this.cursors = this.input.keyboard.createCursorKeys();
-        dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
-        dKey.onDown.add(this.handleDButton, this);
+        this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+        this.dKey.onDown.add(this.handleDButton, this);
     },
 
     update: function() {
@@ -43,19 +43,20 @@ var dragAccel = {
     },
     
     render: function() {
-        var accel = this.ship.body.acceleration;
-        var velX  = Math.round(this.ship.body.velocity.x)
-        var velY  = Math.round(this.ship.body.velocity.y)
-        var posX  = Math.round(this.ship.body.position.x)
-        var posY  = Math.round(this.ship.body.position.y)
+        var body = this.ship.body;
+        var accel = body.acceleration;
+        var velX  = Math.round(body.velocity.x)
+        var velY  = Math.round(body.velocity.y)
+        var posX  = Math.round(body.position.x)
+        var posY  = Math.round(body.position.y)
         game.debug.text('Position: (' + posX + ', ' + posY + '), ' +
             'velocity: (' + velX + ', ' + velY + '), ' +
-            'acceleration: (' + accel.x + ", " + accel.y + '); drag: ' + this.ship.body.drag.x,
+            'acceleration: (' + accel.x + ", " + accel.y + '); drag: ' + body.drag.x,
             10, this.world.height - 10);
     },
     
     handleDButton: function() {
-        var change = 10 * (dKey.shiftKey ? 1 : -1);
+        var change = 10 * (this.dKey.shiftKey ? 1 : -1);
         this.ship.body.drag.set(this.ship.body.drag.x + change);
     },
     
