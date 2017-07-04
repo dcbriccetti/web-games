@@ -12,6 +12,7 @@
 Rotate with the left and right arrows.</p>
 
 <script type="text/javascript">
+'use strict';
 
 var game = new Phaser.Game(800, 800, Phaser.AUTO, '', {
     preload: preload, create: create, update: update
@@ -30,6 +31,7 @@ var running = true;
 var emitter;
 
 function create() {
+    var throwKey;
     game.stage.backgroundColor = 'd0d0d0';
     game.physics.startSystem(Phaser.Physics.Arcade);
 
@@ -40,7 +42,7 @@ function create() {
     game.physics.arcade.enable(enemy);
 
     cursors = game.input.keyboard.createCursorKeys();
-    var throwKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    throwKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     throwKey.onDown.add(throwBall, this);
 
     emitter = game.add.emitter(0, 0, 100);
@@ -50,10 +52,10 @@ function create() {
 function throwBall() {
     var x = Math.cos(player.rotation);
     var y = Math.sin(player.rotation);
-
+    var velocity = 300;
+    
     emitter.x = player.x + x * player.width / 2;
     emitter.y = player.y + y * player.height / 2;
-    var velocity = 300;
     emitter.setXSpeed(velocity * x, velocity * x);
     emitter.setYSpeed(velocity * y, velocity * y);
     emitter.start(false, 10000, 200, 3);
