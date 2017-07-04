@@ -55,12 +55,8 @@ var dragAccel = {
     },
     
     handleDButton: function() {
-        var drag = this.ship.body.drag.x;
-        if (dKey.shiftKey)
-            drag -= 10;
-        else
-            drag += 10;
-        this.ship.body.drag.set(drag);
+        var change = 10 * (dKey.shiftKey ? 1 : -1);
+        this.ship.body.drag.set(this.ship.body.drag.x + change);
     },
     
     createOscillator: function() {
