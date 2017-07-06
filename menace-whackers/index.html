@@ -2,40 +2,44 @@
 <html lang="en"> 
     <head> 
         <meta charset="UTF-8" />
-        <title>Dude Invaders</title>
+        <title>Menace Whackers</title>
         <script type="text/javascript" src="js/phaser.min.js"></script>
     </head>
     <body>
 
-        <h3>Dude Invaders</h3>
+        <h1>Menace Whackers</h1>
 
         <script type="text/javascript">
 
             var whacker;
+            var whackerMass = 1000;
             var cursors;
             var trash;
+            var menaces = ['blowers'];
+            var level = 1;
 
             var game = new Phaser.Game(800, 500, Phaser.AUTO, '', {
                 preload: preload, create: create, update: update
             });
 
             function preload() {
-                game.load.spritesheet('dude', 'assets/DudeSpriteSheet.png', 68, 96);
-                game.load.image('dozer', 'assets/dozer2.png');
+                game.load.spritesheet(menaces[0], 'assets/BlowerSpriteSheet.png', 68, 96);
+                game.load.image('whacker', 'assets/whacker.png');
                 game.load.image('trash', 'assets/trash.png');
             }
 
             function create() {
+                var whackKey;
                 game.stage.backgroundColor = '303030';
                 game.physics.startSystem(Phaser.Physics.P2JS);
 
                 for (var n = 0; n < 20; ++n) {
                     var x = game.rnd.integerInRange(20, game.world.width  - 40);
                     var y = game.rnd.integerInRange(20, game.world.height - 40);
-                    var dude = game.add.sprite(x, y, 'dude');
-                    game.physics.p2.enable(dude);
-                    dude.animations.add('blow', [0, 1]);
-                    dude.animations.play('blow', 4, true);
+                    var menace = game.add.sprite(x, y, menaces[level - 1]);
+                    game.physics.p2.enable(menace);
+                    menace.animations.add('operate', [0, 6]);
+                    menace.animations.play('operate', 4, true);
                 }
                 
                 trash = game.add.sprite(game.world.width - 50, game.world.height - 50, 'trash');
@@ -47,13 +51,13 @@
                         body.sprite.kill();
                 });
 
-                whacker = game.add.sprite(game.world.width / 2, game.world.height - 250, 'dozer');
+                whacker = game.add.sprite(game.world.width / 2, game.world.height - 250, 'whacker');
                 game.physics.p2.enable(whacker);
-                whacker.body.mass = 1000;
+                whacker.body.mass = whackerMass;
 
                 cursors = game.input.keyboard.createCursorKeys();
-                var throwKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-                throwKey.onDown.add(spin, this);
+                whackKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+                whackKey.onDown.add(spin, this);
             }
 
             function update() {
