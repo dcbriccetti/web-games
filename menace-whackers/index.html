@@ -13,30 +13,41 @@
 
             var whacker;
             var whackerMass = 1000;
+            var maxMenaces = 20;
             var cursors;
             var trash;
-            var menaces = ['blowers'];
+            var menaceNames = ['blowers'];
+            var menaces;
             var level = 1;
+            var menaceSound;
 
             var game = new Phaser.Game(800, 500, Phaser.AUTO, '', {
                 preload: preload, create: create, update: update
             });
 
             function preload() {
-                game.load.spritesheet(menaces[0], 'assets/BlowerSpriteSheet.png', 68, 96);
+                game.load.spritesheet(menaceNames[0], 'assets/BlowerSpriteSheet.png', 68, 96);
                 game.load.image('whacker', 'assets/whacker.png');
                 game.load.image('trash', 'assets/trash.png');
+                game.load.audio('blower', 'assets/blower.wav');
             }
 
             function create() {
                 var whackKey;
+                menaceSound = game.add.audio('blower');
+                menaceSound.loopFull(1);
+                menaceSound.play();
+
                 game.stage.backgroundColor = '303030';
                 game.physics.startSystem(Phaser.Physics.P2JS);
+                game.physics.p2.restitution = 0.5;
+                
+                menaces = game.add.group();
 
-                for (var n = 0; n < 20; ++n) {
+                for (var n = 0; n < maxMenaces; ++n) {
                     var x = game.rnd.integerInRange(20, game.world.width  - 40);
                     var y = game.rnd.integerInRange(20, game.world.height - 40);
-                    var menace = game.add.sprite(x, y, menaces[level - 1]);
+                    var menace = menaces.create(x, y, menaceNames[level - 1]);
                     game.physics.p2.enable(menace);
                     menace.animations.add('operate', [0, 6]);
                     menace.animations.play('operate', 4, true);
@@ -47,8 +58,10 @@
                 game.physics.p2.enable(trash);
                 trash.body.static = true;
                 trash.body.onBeginContact.add(function(body, shapeA, shapeB, equation) {
-                    if (body.sprite !== whacker)
+                    if (body.sprite !== whacker) {
                         body.sprite.kill();
+                        menaceSound.fadeTo(10, menaces.total / maxMenaces);
+                    }
                 });
 
                 whacker = game.add.sprite(game.world.width / 2, game.world.height - 250, 'whacker');
@@ -61,7 +74,7 @@
             }
 
             function update() {
-                var moveAmt = 200;
+                var moveAmt = 500;
                 whacker.body.setZeroVelocity();
 
                 if (cursors.left.isDown) {
