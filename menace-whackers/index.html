@@ -17,6 +17,8 @@
             var cursors;
             var trash;
             var menaceNames = ['blowers'];
+            var menaceSpritesheets = ['BlowerSpriteSheet.png'];
+            var menaceDimensions = [[68, 96]];
             var menaces;
             var level = 1;
             var menaceSound;
@@ -26,7 +28,8 @@
             });
 
             function preload() {
-                game.load.spritesheet(menaceNames[0], 'assets/BlowerSpriteSheet.png', 68, 96);
+                var dim = menaceDimensions[0];
+                game.load.spritesheet(menaceNames[0], 'assets/' + menaceSpritesheets[0], dim[0], dim[1]);
                 game.load.image('whacker', 'assets/whacker.png');
                 game.load.image('trash', 'assets/trash.png');
                 game.load.audio('blower', 'assets/blower.wav');
