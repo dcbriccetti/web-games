@@ -1,14 +1,14 @@
 Game = function(game) {};
 
 Game.prototype = {
+    menaceNames: ['blower', 'blower'], // Change the second elements to a new menace
+    menaceSpritesheets: ['BlowerSpriteSheet.png', 'BlowerSpriteSheet.png'],
+    menaceDimensions: [[68, 96], [68, 96]],
     whacker: null,
     whackerMass: 1000,
-    maxMenaces: 20,
+    maxMenaces: 5,
     cursors: null,
     trash: null,
-    menaceNames: ['blowers'],
-    menaceSpritesheets: ['BlowerSpriteSheet.png'],
-    menaceDimensions: [[68, 96]],
     menaces: null,
     level: 1,
     menaceSound: null,
@@ -17,32 +17,20 @@ Game.prototype = {
         var dim = this.menaceDimensions[0];
         game.load.spritesheet(this.menaceNames[0], 'assets/' + this.menaceSpritesheets[0], dim[0], dim[1]);
         game.load.image('whacker', 'assets/whacker.png');
-        game.load.image('trash', 'assets/trash.png');
-        game.load.audio('blower', 'assets/blower.wav');
+        game.load.image('trash',   'assets/trash.png');
+        game.load.audio('blower',  'assets/blower.wav');
     },
 
     create: function() {
         var self = this;
         var whackKey;
-        this.menaceSound = game.add.audio('blower');
-        this.menaceSound.loopFull(1);
-        this.menaceSound.play();
 
         game.stage.backgroundColor = '303030';
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.restitution = 0.5;
 
         this.menaces = game.add.group();
-
-        for (var n = 0; n < this.maxMenaces; ++n) {
-            var x = game.rnd.integerInRange(20, game.world.width  - 40);
-            var y = game.rnd.integerInRange(20, game.world.height - 40);
-            var menace = this.menaces.create(x, y, this.menaceNames[this.level - 1]);
-            game.physics.p2.enable(menace);
-            menace.animations.add('operate', [0, 6]);
-            menace.animations.play('operate', 4, true);
-        }
-
+        this.createMenaces();
         this.trash = game.add.sprite(game.world.width - 50, game.world.height - 50, 'trash');
         this.trash.anchor.setTo(.5);
         game.physics.p2.enable(this.trash);
@@ -51,6 +39,10 @@ Game.prototype = {
             if (body.sprite !== self.whacker) {
                 body.sprite.kill();
                 self.menaceSound.fadeTo(10, self.menaces.total / self.maxMenaces);
+                if (self.menaces.total === 0 && self.level < self.menaceNames.length) {
+                    self.level++;
+                    self.createMenaces();
+                }
             }
         });
 
@@ -63,6 +55,21 @@ Game.prototype = {
         whackKey.onDown.add(this.spin, this);
     },
 
+    createMenaces: function() {
+        this.menaceSound = game.add.audio(this.menaceNames[this.level - 1]);
+        this.menaceSound.loopFull(1);
+        this.menaceSound.play();
+
+        for (var n = 0; n < this.maxMenaces; ++n) {
+            var x = game.rnd.integerInRange(20, game.world.width  - 40);
+            var y = game.rnd.integerInRange(20, game.world.height - 40);
+            var menace = this.menaces.create(x, y, this.menaceNames[this.level - 1]);
+            game.physics.p2.enable(menace);
+            menace.animations.add('operate', [0, 6]);
+            menace.animations.play('operate', 4, true);
+        }
+    },
+    
     update: function() {
         var moveAmt = 500;
         this.whacker.body.setZeroVelocity();
