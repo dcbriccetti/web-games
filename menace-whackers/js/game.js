@@ -65,9 +65,11 @@ Game.prototype = {
             var y = game.rnd.integerInRange(20, game.world.height - 40);
             var menace = this.menaces.create(x, y, this.menaceNames[this.level - 1]);
             game.physics.p2.enable(menace);
-            menace.animations.add('operate', [0, 6]);
+            menace.animations.add('operate', [0, 1, 2, 3, 4, 5, 6]);
             menace.animations.play('operate', 4, true);
         }
+        
+        document.getElementById('level').innerHTML = this.menaceNames[this.level - 1];
     },
     
     update: function() {
