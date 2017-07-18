@@ -3,102 +3,10 @@
     <head> 
         <meta charset="UTF-8" />
         <title>Menace Whackers</title>
-        <script type="text/javascript" src="js/phaser.min.js"></script>
+        <script src="js/phaser.min.js"></script>
+        <script src="js/game.js"></script>
     </head>
     <body>
-
         <h1>Menace Whackers</h1>
-
-        <script type="text/javascript">
-
-            var whacker;
-            var whackerMass = 1000;
-            var maxMenaces = 20;
-            var cursors;
-            var trash;
-            var menaceNames = ['blowers'];
-            var menaceSpritesheets = ['BlowerSpriteSheet.png'];
-            var menaceDimensions = [[68, 96]];
-            var menaces;
-            var level = 1;
-            var menaceSound;
-
-            var game = new Phaser.Game(800, 500, Phaser.AUTO, '', {
-                preload: preload, create: create, update: update
-            });
-
-            function preload() {
-                var dim = menaceDimensions[0];
-                game.load.spritesheet(menaceNames[0], 'assets/' + menaceSpritesheets[0], dim[0], dim[1]);
-                game.load.image('whacker', 'assets/whacker.png');
-                game.load.image('trash', 'assets/trash.png');
-                game.load.audio('blower', 'assets/blower.wav');
-            }
-
-            function create() {
-                var whackKey;
-                menaceSound = game.add.audio('blower');
-                menaceSound.loopFull(1);
-                menaceSound.play();
-
-                game.stage.backgroundColor = '303030';
-                game.physics.startSystem(Phaser.Physics.P2JS);
-                game.physics.p2.restitution = 0.5;
-                
-                menaces = game.add.group();
-
-                for (var n = 0; n < maxMenaces; ++n) {
-                    var x = game.rnd.integerInRange(20, game.world.width  - 40);
-                    var y = game.rnd.integerInRange(20, game.world.height - 40);
-                    var menace = menaces.create(x, y, menaceNames[level - 1]);
-                    game.physics.p2.enable(menace);
-                    menace.animations.add('operate', [0, 6]);
-                    menace.animations.play('operate', 4, true);
-                }
-                
-                trash = game.add.sprite(game.world.width - 50, game.world.height - 50, 'trash');
-                trash.anchor.setTo(.5);
-                game.physics.p2.enable(trash);
-                trash.body.static = true;
-                trash.body.onBeginContact.add(function(body, shapeA, shapeB, equation) {
-                    if (body.sprite !== whacker) {
-                        body.sprite.kill();
-                        menaceSound.fadeTo(10, menaces.total / maxMenaces);
-                    }
-                });
-
-                whacker = game.add.sprite(game.world.width / 2, game.world.height - 250, 'whacker');
-                game.physics.p2.enable(whacker);
-                whacker.body.mass = whackerMass;
-
-                cursors = game.input.keyboard.createCursorKeys();
-                whackKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-                whackKey.onDown.add(spin, this);
-            }
-
-            function update() {
-                var moveAmt = 500;
-                whacker.body.setZeroVelocity();
-
-                if (cursors.left.isDown) {
-                    whacker.body.moveLeft(moveAmt);
-                }
-                if (cursors.right.isDown) {
-                    whacker.body.moveRight(moveAmt);
-                }
-                if (cursors.up.isDown) {
-                    whacker.body.moveUp(moveAmt);
-                }
-                if (cursors.down.isDown) {
-                    whacker.body.moveDown(moveAmt);
-                }
-            }
-            
-            function spin() {
-                whacker.body.angularVelocity = 10;
-            }
-
-        </script>
-
     </body>
 </html>
