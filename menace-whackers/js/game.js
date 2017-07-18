@@ -1,29 +1,45 @@
 Game = function(game) {};
 
 Game.prototype = {
-    menaceNames: ['blower', 'blower'], // Change the second elements to a new menace
-    menaceSpritesheets: ['BlowerSpriteSheet.png', 'BlowerSpriteSheet.png'],
-    menaceDimensions: [[68, 96], [68, 96]],
-    whacker: null,
-    whackerMass: 1000,
-    maxMenaces: 5,
-    cursors: null,
-    trash: null,
-    menaces: null,
-    level: 1,
-    menaceSound: null,
+    levelDefs:      null,
+    level:          1,
+    score:          0,
+    whacker:        null,
+    whackerMass:    1000,
+    maxMenaces:     10,
+    cursors:        null,
+    trash:          null,
+    menaces:        null,
+    menaceSound:    null,
+    
+    levelDef: function(menaceName, menaceSpritesheet, menaceDimensions, menaceAudioFilename, animationSequence) {
+        return {
+            menaceName:             menaceName,
+            menaceSpritesheet:      menaceSpritesheet,
+            menaceDimensions:       menaceDimensions,
+            menaceAudioFilename:    menaceAudioFilename,
+            animationSequence:      animationSequence
+        };
+    },
 
     preload: function() {
-        var dim = this.menaceDimensions[0];
-        game.load.spritesheet(this.menaceNames[0], 'assets/' + this.menaceSpritesheets[0], dim[0], dim[1]);
+        var i, levelDef, dim;
+        var ldef = this.levelDef;
+        this.levelDefs = [
+            ldef('Leaf Blowers', 'BlowerSpriteSheet.png', [68, 96], 'blower.wav', [0, 1, 2, 3, 4, 5, 6])
+        ];
+        for (i = 0; i < this.levelDefs.length; ++i) {
+            levelDef = this.levelDefs[i];
+            dim = levelDef.menaceDimensions;
+            game.load.spritesheet(levelDef.menaceName, 'assets/' + levelDef.menaceSpritesheet, dim[0], dim[1]);
+            game.load.audio(levelDef.menaceName, 'assets/' + levelDef.menaceAudioFilename);
+        }
         game.load.image('whacker', 'assets/whacker.png');
         game.load.image('trash',   'assets/trash.png');
-        game.load.audio('blower',  'assets/blower.wav');
     },
 
     create: function() {
         var self = this;
-        var whackKey;
 
         game.stage.backgroundColor = '303030';
         game.physics.startSystem(Phaser.Physics.P2JS);
@@ -35,11 +51,13 @@ Game.prototype = {
         this.trash.anchor.setTo(.5);
         game.physics.p2.enable(this.trash);
         this.trash.body.static = true;
+        
         this.trash.body.onBeginContact.add(function(body, shapeA, shapeB, equation) {
             if (body.sprite !== self.whacker) {
                 body.sprite.kill();
+                document.getElementById('score').innerHTML = ++self.score;
                 self.menaceSound.fadeTo(10, self.menaces.total / self.maxMenaces);
-                if (self.menaces.total === 0 && self.level < self.menaceNames.length) {
+                if (self.menaces.total === 0 && self.level < self.levelDefs.length) {
                     self.level++;
                     self.createMenaces();
                 }
@@ -51,25 +69,24 @@ Game.prototype = {
         this.whacker.body.mass = this.whackerMass;
 
         this.cursors = game.input.keyboard.createCursorKeys();
-        whackKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        whackKey.onDown.add(this.spin, this);
     },
 
     createMenaces: function() {
-        this.menaceSound = game.add.audio(this.menaceNames[this.level - 1]);
+        var levelDef = this.levelDefs[this.level - 1];
+        this.menaceSound = game.add.audio(levelDef.menaceName);
         this.menaceSound.loopFull(1);
         this.menaceSound.play();
 
         for (var n = 0; n < this.maxMenaces; ++n) {
             var x = game.rnd.integerInRange(20, game.world.width  - 40);
             var y = game.rnd.integerInRange(20, game.world.height - 40);
-            var menace = this.menaces.create(x, y, this.menaceNames[this.level - 1]);
+            var menace = this.menaces.create(x, y, levelDef.menaceName);
             game.physics.p2.enable(menace);
-            menace.animations.add('operate', [0, 1, 2, 3, 4, 5, 6]);
+            menace.animations.add('operate', levelDef.animationSequence);
             menace.animations.play('operate', 4, true);
         }
         
-        document.getElementById('level').innerHTML = this.menaceNames[this.level - 1];
+        document.getElementById('level').innerHTML = levelDef.menaceName;
     },
     
     update: function() {
@@ -77,9 +94,15 @@ Game.prototype = {
         this.whacker.body.setZeroVelocity();
 
         if (this.cursors.left.isDown) {
+            if (this.cursors.left.shiftKey) {
+                this.whacker.body.angularVelocity = -10;
+            }
             this.whacker.body.moveLeft(moveAmt);
         }
         if (this.cursors.right.isDown) {
+            if (this.cursors.right.shiftKey) {
+                this.whacker.body.angularVelocity = 10;
+            }
             this.whacker.body.moveRight(moveAmt);
         }
         if (this.cursors.up.isDown) {
@@ -88,13 +111,9 @@ Game.prototype = {
         if (this.cursors.down.isDown) {
             this.whacker.body.moveDown(moveAmt);
         }
-    },
-
-    spin: function() {
-        this.whacker.body.angularVelocity = 10;
     }
 };
 
-var game = new Phaser.Game(800, 500, Phaser.AUTO, '');
+var game = new Phaser.Game(1000, 750, Phaser.AUTO, '');
 game.state.add('Game', Game);
 game.state.start('Game');
