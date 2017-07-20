@@ -1,16 +1,17 @@
 Game = function(game) {};
 
 Game.prototype = {
-    levelDefs:      null,
-    level:          1,
-    score:          0,
-    whacker:        null,
-    whackerMass:    1000,
-    maxMenaces:     10,
-    cursors:        null,
-    trash:          null,
-    menaces:        null,
-    menaceSound:    null,
+    levelDefs:          null,
+    level:              1,
+    score:              0,
+    whacker:            null,
+    whackerMass:        1000,
+    maxMenaces:         10,
+    angularVelocity:    10,
+    cursors:            null,
+    trash:              null,
+    menaces:            null,
+    menaceSound:        null,
     
     levelDef: function(menaceName, menaceSpritesheet, menaceDimensions, menaceAudioFilename, animationSequence) {
         return {
@@ -21,7 +22,7 @@ Game.prototype = {
             animationSequence:      animationSequence
         };
     },
-
+    
     preload: function() {
         var i, levelDef, dim;
         var ldef = this.levelDef;
@@ -69,6 +70,8 @@ Game.prototype = {
         this.whacker.body.mass = this.whackerMass;
 
         this.cursors = game.input.keyboard.createCursorKeys();
+        this.spinBoostKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
+        this.spinBoostKey.onDown.add(this.boostSpin, this);
     },
 
     createMenaces: function() {
@@ -95,13 +98,13 @@ Game.prototype = {
 
         if (this.cursors.left.isDown) {
             if (this.cursors.left.shiftKey) {
-                this.whacker.body.angularVelocity = -10;
+                this.whacker.body.angularVelocity = -this.angularVelocity;
             }
             this.whacker.body.moveLeft(moveAmt);
         }
         if (this.cursors.right.isDown) {
             if (this.cursors.right.shiftKey) {
-                this.whacker.body.angularVelocity = 10;
+                this.whacker.body.angularVelocity = this.angularVelocity;
             }
             this.whacker.body.moveRight(moveAmt);
         }
@@ -111,6 +114,10 @@ Game.prototype = {
         if (this.cursors.down.isDown) {
             this.whacker.body.moveDown(moveAmt);
         }
+    },
+    
+    boostSpin: function() {
+        this.angularVelocity = 30;
     }
 };
 
