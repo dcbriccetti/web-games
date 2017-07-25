@@ -72,6 +72,18 @@ Game.prototype = {
         this.cursors = game.input.keyboard.createCursorKeys();
         this.spinBoostKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
         this.spinBoostKey.onDown.add(this.boostSpin, this);
+        this.generateKey = game.input.keyboard.addKey(Phaser.Keyboard.G);
+        this.generateKey.onDown.add(this.createMenace, this);
+    },
+    
+    createMenace: function() {
+        var levelDef = this.levelDefs[this.level - 1];
+        var x = game.rnd.integerInRange(20, game.world.width  - 40);
+        var y = game.rnd.integerInRange(20, game.world.height - 40);
+        var menace = this.menaces.create(x, y, levelDef.menaceName);
+        game.physics.p2.enable(menace);
+        menace.animations.add('operate', levelDef.animationSequence);
+        menace.animations.play('operate', 10, true);
     },
 
     createMenaces: function() {
@@ -81,12 +93,7 @@ Game.prototype = {
         this.menaceSound.play();
 
         for (var n = 0; n < this.maxMenaces; ++n) {
-            var x = game.rnd.integerInRange(20, game.world.width  - 40);
-            var y = game.rnd.integerInRange(20, game.world.height - 40);
-            var menace = this.menaces.create(x, y, levelDef.menaceName);
-            game.physics.p2.enable(menace);
-            menace.animations.add('operate', levelDef.animationSequence);
-            menace.animations.play('operate', 4, true);
+            this.createMenace();
         }
         
         document.getElementById('level').innerHTML = levelDef.menaceName;
