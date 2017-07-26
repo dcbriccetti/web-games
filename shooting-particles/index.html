@@ -8,8 +8,8 @@
 <body>
 
 <h1>Shooting Particles</h1>
-<p>When you press the space bar, this program shoots several projectiles.
-Rotate with the left and right arrows.</p>
+<p>When you press the space bar, this program shoots a projectile.
+Rotate with the left and right arrows. Hold down shift for faster rotation.</p>
 
 <script type="text/javascript">
 'use strict';
@@ -27,11 +27,13 @@ function preload() {
 var player;
 var enemy;
 var cursors;
+var throwKey;
+var shiftKey;
 var running = true;
 var emitter;
+var mayShootAfterTime = 0;
 
 function create() {
-    var throwKey;
     game.stage.backgroundColor = 'd0d0d0';
     game.physics.startSystem(Phaser.Physics.Arcade);
 
@@ -43,7 +45,7 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
     throwKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    throwKey.onDown.add(throwBall, this);
+    shiftKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
 
     emitter = game.add.emitter(0, 0, 100);
     emitter.makeParticles('Ball');
@@ -52,22 +54,26 @@ function create() {
 function throwBall() {
     var x = Math.cos(player.rotation);
     var y = Math.sin(player.rotation);
-    var velocity = 300;
+    var velocity = 400;
     
     emitter.x = player.x + x * player.width / 2;
     emitter.y = player.y + y * player.height / 2;
     emitter.setXSpeed(velocity * x, velocity * x);
     emitter.setYSpeed(velocity * y, velocity * y);
-    emitter.start(false, 10000, 200, 3);
+    emitter.start(false, 10000, 0, 1);
 }
 
 function update() {
     if (running) {
+        if (throwKey.isDown && game.time.time > mayShootAfterTime) {
+            mayShootAfterTime = game.time.time + 100;
+            throwBall();
+        }
         if (cursors.left.isDown) {
-            player.angle -= 5;
+            player.angle -= shiftKey.isDown ? 5 : 1;
         }
         if (cursors.right.isDown) {
-            player.angle += 5;
+            player.angle += shiftKey.isDown ? 5 : 1;
         }
     }
     
