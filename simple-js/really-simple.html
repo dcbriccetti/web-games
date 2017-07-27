@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <h1>Today’s Random Number</h1> 
+        <span style='font-size: 50%'>(Brought to you by Jive Turkeys, Inc.)</span>
+        <h2><span id='randomnum'></span></h2>
+        <script>
+            var setCount = 0;
+            
+            function displayRandom() {
+                document.getElementById('randomnum').textContent = Math.random();
+                setCount++;
+                if (setCount < 100) {
+                    setTimeout(displayRandom, 10);
+                }
+            }
+            
+            displayRandom();
+        </script>
+    </body>
+</html>
