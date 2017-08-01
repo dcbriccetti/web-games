@@ -11,6 +11,7 @@ Simple.Game.prototype = {
     player: null,
     enemy: null,
     cursors: null,
+    running: true,
 
     create: function() {
         this.stage.backgroundColor = 'e0e0f0';
@@ -32,12 +33,18 @@ Simple.Game.prototype = {
     frameNumber: 0,
 
     update: function() {
+        var elapsedSeconds = Math.floor(this.game.time.totalElapsedSeconds());
+        document.getElementById('elapsed').textContent = elapsedSeconds;
+        if (this.running && elapsedSeconds >= 4) {
+            alert('Victory!');
+            this.running = false;
+        }
         function spriteContact(obj1, obj2) {
             this.player.kill();
         }
         var playerVelX = 0;
         var playerVelY = 0;
-        var vel = 100;
+        var vel = 500;
         if (cursors.right.isDown) {
             playerVelX = vel;
             this.player.animations.play('walk-right', 4);
@@ -54,7 +61,8 @@ Simple.Game.prototype = {
 
         if (++this.frameNumber % 30 == 0) {
             var xVel = game.rnd.integerInRange(-800, 800);
-            this.enemy.body.velocity.set(xVel, 0);
+            var yVel = game.rnd.integerInRange(-800, 800);
+            this.enemy.body.velocity.set(xVel, yVel);
         }
 
         game.physics.arcade.collide(this.player, this.enemy, spriteContact, null, this);
