@@ -4,31 +4,63 @@ Simple.Game = function () {};
 
 Simple.Game.prototype = {
     preload: function() {
-        this.load.image('dude', 'dude.png');
+        this.load.image('enemy', 'enemy.png');
+        this.load.spritesheet('lady', 'lady.png', 50, 100);
     },
 
     player: null,
+    enemy: null,
     cursors: null,
 
     create: function() {
         this.stage.backgroundColor = 'e0e0f0';
         this.physics.startSystem(Phaser.Physics.ARCADE);
 
-        player = this.add.sprite(40, this.world.height / 2, 'dude');
-        this.physics.enable(player, Phaser.Physics.ARCADE);
-        player.body.drag.set(200);
-        player.body.collideWorldBounds = true;
+        this.player = this.add.sprite(40, this.world.height / 2, 'lady');
+        this.player.animations.add('walk-right', [0, 1]);
+        this.player.animations.add('walk-left',  [2, 3]);
+        this.enemy  = this.add.sprite(10, this.world.height - 10, 'enemy');
+        this.physics.enable(this.player, Phaser.Physics.ARCADE);
+        this.physics.enable(this.enemy,  Phaser.Physics.ARCADE);
+        this.enemy.body.collideWorldBounds = true;
+        this.enemy.body.bounce = 0.2;
+        this.player.body.drag.set(100);
 
         cursors = this.input.keyboard.createCursorKeys();
     },
+    
+    frameNumber: 0,
 
     update: function() {
-        if (cursors.right.isDown) {
-            player.body.velocity.set(500, 0);
+        function spriteContact(obj1, obj2) {
+            this.player.kill();
         }
+        var playerVelX = 0;
+        var playerVelY = 0;
+        var vel = 100;
+        if (cursors.right.isDown) {
+            playerVelX = vel;
+            this.player.animations.play('walk-right', 4);
+        } else if (cursors.left.isDown) {
+            playerVelX = -vel;
+            this.player.animations.play('walk-left', 4);
+        }
+        if (cursors.up.isDown) {
+            playerVelY = -vel;
+        } else if (cursors.down.isDown) {
+            playerVelY = vel;
+        }
+        this.player.body.velocity.set(playerVelX, playerVelY);
+
+        if (++this.frameNumber % 30 == 0) {
+            var xVel = game.rnd.integerInRange(-800, 800);
+            this.enemy.body.velocity.set(xVel, 0);
+        }
+
+        game.physics.arcade.collide(this.player, this.enemy, spriteContact, null, this);
     }
 };
     
-var game = new Phaser.Game('100', 500);
+var game = new Phaser.Game('100', 500, Phaser.CANVAS);
 game.state.add('Game', Simple.Game);
 game.state.start('Game');
