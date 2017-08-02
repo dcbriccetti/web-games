@@ -68,6 +68,8 @@ Simple.Game.prototype = {
                 this.running = false;
             }
             game.physics.arcade.collide(this.player, this.enemy, spriteContact, null, this);
+        } else {
+            this.enemy.body.velocity.set(0, 0);
         }
     }
 };
