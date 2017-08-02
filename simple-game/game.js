@@ -33,39 +33,42 @@ Simple.Game.prototype = {
     frameNumber: 0,
 
     update: function() {
-        var elapsedSeconds = Math.floor(this.game.time.totalElapsedSeconds());
-        document.getElementById('elapsed').textContent = elapsedSeconds;
-        if (this.running && elapsedSeconds >= 4) {
-            alert('Victory!');
-            this.running = false;
-        }
-        function spriteContact(obj1, obj2) {
-            this.player.kill();
-        }
-        var playerVelX = 0;
-        var playerVelY = 0;
-        var vel = 500;
-        if (cursors.right.isDown) {
-            playerVelX = vel;
-            this.player.animations.play('walk-right', 4);
-        } else if (cursors.left.isDown) {
-            playerVelX = -vel;
-            this.player.animations.play('walk-left', 4);
-        }
-        if (cursors.up.isDown) {
-            playerVelY = -vel;
-        } else if (cursors.down.isDown) {
-            playerVelY = vel;
-        }
-        this.player.body.velocity.set(playerVelX, playerVelY);
+        if (this.running) {
+            var elapsedSeconds = Math.floor(this.game.time.totalElapsedSeconds());
+            document.getElementById('elapsed').textContent = elapsedSeconds;
+            if (this.running && elapsedSeconds >= 10) {
+                alert('You survived!');
+                this.running = false;
+            }
+            var playerVelX = 0;
+            var playerVelY = 0;
+            var vel = 200;
+            if (cursors.right.isDown) {
+                playerVelX = vel;
+                this.player.animations.play('walk-right', 4);
+            } else if (cursors.left.isDown) {
+                playerVelX = -vel;
+                this.player.animations.play('walk-left', 4);
+            }
+            if (cursors.up.isDown) {
+                playerVelY = -vel;
+            } else if (cursors.down.isDown) {
+                playerVelY = vel;
+            }
+            this.player.body.velocity.set(playerVelX, playerVelY);
 
-        if (++this.frameNumber % 30 == 0) {
-            var xVel = game.rnd.integerInRange(-800, 800);
-            var yVel = game.rnd.integerInRange(-800, 800);
-            this.enemy.body.velocity.set(xVel, yVel);
-        }
+            if (++this.frameNumber % 30 == 0) {
+                var xVel = game.rnd.integerInRange(-800, 800);
+                var yVel = game.rnd.integerInRange(-800, 800);
+                this.enemy.body.velocity.set(xVel, yVel);
+            }
 
-        game.physics.arcade.collide(this.player, this.enemy, spriteContact, null, this);
+            function spriteContact(obj1, obj2) {
+                this.player.kill();
+                this.running = false;
+            }
+            game.physics.arcade.collide(this.player, this.enemy, spriteContact, null, this);
+        }
     }
 };
     
