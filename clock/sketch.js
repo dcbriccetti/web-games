@@ -8,14 +8,20 @@ function setup() {
 
 function draw() {
 
-    function drawHourMarks(distanceFromCenter) {
-        const numHours = 12;
-        for (let i = 0; i < numHours; ++i) {
+    function drawTickMarks(distanceFromCenter, msAngle) {
+        const numMarks = 60;
+        for (let i = 0; i < numMarks; ++i) {
             push();
-            rotateZ(i * TWO_PI / numHours);
+            const angle = i * TWO_PI / numMarks;
+            const angleTurnedOneQuarter = (angle + TWO_PI / 4) % TWO_PI;
+            rotateZ(angle);
             translate(-distanceFromCenter, 0, 0);
             rotateX(PI / 2); // Align with the z axis
-            cylinder(10, 50);
+            const raiseExtent = PI / 30;
+            const tickDistanceFromMsPos = Math.min(raiseExtent, Math.abs(msAngle - angleTurnedOneQuarter));
+            const markThickness = i % 5 === 0 ? 10 : 5;
+            const markHeight = map(tickDistanceFromMsPos, 0, raiseExtent, 50, 10);
+            cylinder(markThickness, markHeight);
             pop();
         }
     }
@@ -23,7 +29,7 @@ function draw() {
     function drawAxle() {
         push();
         rotateX(PI / 2);
-        cylinder(10, 150);
+        cylinder(10, 200);
         pop();
     }
 
@@ -56,15 +62,16 @@ function draw() {
     const minutePlusFraction = minute() + secondPlusFraction / 60;
     const hourPlusFraction = hour() % 12 + minutePlusFraction / 60;
 
-    fill(255, 203, 68);
-    drawHourMarks(width * .35);
+    fill(59, 71, 248);
+    const msAngle = map(millisecondsOfCurrentSecond, 0, 1000, PI * 2, 0);
+    drawTickMarks(width * .35, msAngle);
     fill(0);
     drawAxle();
 
-    fill(31, 130, 27);
-    drawHand(hourPlusFraction,  12, 9, width / 6, 0);
-    fill(108, 161, 150);
+    fill(51, 136, 217);
+    drawHand(hourPlusFraction, 12, 9, width / 6, 0);
+    fill(69, 233, 240);
     drawHand(minutePlusFraction, 60, 6, width / 3, 30);
-    fill(240, 240, 86);
+    fill(51, 217, 144);
     drawHand(secondPlusFraction, 60, 3, width / 3, 60);
 }
