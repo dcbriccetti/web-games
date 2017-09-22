@@ -134,7 +134,7 @@ function draw() {
     /** Moves the entire clock on the y axis sinusoidally, in the manner of a washing machine agitator */
     function agitateClock(cyclesPerSecond, maxRotationRadians) {
         const angleOverTime = cyclesPerSecond / 1000 * (millis() - State.navStartMsSecondOffset) * PI * 2;
-        rotateY(map(Math.sin(angleOverTime), -1, 1, -maxRotationRadians, maxRotationRadians));
+        rotateY(Math.sin(angleOverTime) * maxRotationRadians);
     }
 
     agitateClock(0.1, PI / 8);
