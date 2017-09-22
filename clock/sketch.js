@@ -2,8 +2,7 @@
 // Inspired by The Coding Train Coding Challenge #74: Clock with p5.js, https://www.youtube.com/watch?v=E4RyStef-gY
 
 State = {
-    oscSecs: null,
-    oscMins: null,
+    soundOn:                true,
     // Used to align the clock “agitation” cycle with a second boundary
     navStartMsSecondOffset: window.performance.timing.navigationStart % 1000,
     numTickMarks:           60,
@@ -33,12 +32,17 @@ function Sound() {
     this.oscMins = startOsc(State.freqMinutes);
 
     this.set = function(msOfCurrentSecond, minutesFraction) {
-        State.sound.oscSecs.amp(map(msOfCurrentSecond, 0, 1000, State.maxVolumeSeconds, 0));
-        const fractionalSecondsAngle = map(msOfCurrentSecond, 0, 1000, 0, TWO_PI);
-        State.sound.oscSecs.pan(Math.sin(fractionalSecondsAngle));
-        const fadeZone = 1 / 12;
-        const vol = map(Math.min(fadeZone, minutesFraction), 0, fadeZone, State.maxVolumeMinutes, 0);
-        State.sound.oscMins.amp(vol);
+        if (State.soundOn) {
+            State.sound.oscSecs.amp(map(msOfCurrentSecond, 0, 1000, State.maxVolumeSeconds, 0));
+            const fractionalSecondsAngle = map(msOfCurrentSecond, 0, 1000, 0, TWO_PI);
+            State.sound.oscSecs.pan(Math.sin(fractionalSecondsAngle));
+            const fadeZone = 1 / 12;
+            const vol = map(Math.min(fadeZone, minutesFraction), 0, fadeZone, State.maxVolumeMinutes, 0);
+            State.sound.oscMins.amp(vol);
+        } else {
+            State.sound.oscSecs.amp(0);
+            State.sound.oscMins.amp(0);
+        }
     }
 }
 
@@ -146,4 +150,10 @@ function draw() {
     drawHand(hourPlusFraction,   12, 9, width / 6, State.colors.hour, 0);
     drawHand(minutePlusFraction, 60, 6, width / 3, State.colors.min, 30);
     drawHand(secondPlusFraction, 60, 3, width / 3, State.colors.sec, 60);
+}
+
+function keyPressed() {
+    if (key === 'S') {
+        State.soundOn = !State.soundOn;
+    }
 }
