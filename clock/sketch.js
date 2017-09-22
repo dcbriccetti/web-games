@@ -10,7 +10,7 @@ State = {
     hourMarkThickness:      10,
     minuteMarkThickness:    5,
     raisedMarkMaxHeight:    50,
-    normalMarkHeight:       10,
+    markHeight:       10,
     axleThickness:          10,
     axleLength:             200,
     freqSeconds:            880,
@@ -31,12 +31,12 @@ function Sound() {
     this.oscSecs = startOsc(State.freqSeconds);
     this.oscMins = startOsc(State.freqMinutes);
 
-    this.set = function(msOfCurrentSecond, minutesFraction) {
+    this.set = function(msAfterCurrentSecond, minutesFraction) {
         if (State.soundOn) {
             const rampTime = 0.01;
-            const secsVol = map(msOfCurrentSecond, 0, 1000, State.maxVolumeSeconds, 0);
+            const secsVol = map(msAfterCurrentSecond, 0, 1000, State.maxVolumeSeconds, 0);
             State.sound.oscSecs.amp(secsVol, rampTime);
-            const fractionalSecondsAngle = map(msOfCurrentSecond, 0, 1000, 0, TWO_PI);
+            const fractionalSecondsAngle = map(msAfterCurrentSecond, 0, 1000, 0, TWO_PI);
             State.sound.oscSecs.pan(Math.sin(fractionalSecondsAngle));
             const fadeZone = 1 / 12;
             const minsVol = map(Math.min(fadeZone, minutesFraction), 0, fadeZone,
@@ -66,9 +66,9 @@ function draw() {
     /**
      * Draws tick marks along the circumference of the clock.
      * @param radius the radius of the circle along which the marks are drawn
-     * @param msOfCurrentSecond how far we are into the next second
+     * @param msAfterCurrentSecond how far we are into the next second
      */
-    function drawTickMarks(radius, msOfCurrentSecond) {
+    function drawTickMarks(radius, msAfterCurrentSecond) {
         /**
          * Computes the thickness of a tick mark, based on its tick index. Ticks at hour
          * positions are thicker.
@@ -87,12 +87,14 @@ function draw() {
          */
         function markHeight(angle) {
             const angleTurnedOneQuarter = (angle + TWO_PI / 4) % TWO_PI;
-            const msAngle = map(msOfCurrentSecond, 0, 1000, PI * 2, 0);
+            const msAngle = map(msAfterCurrentSecond, 0, 1000, PI * 2, 0);
             const tickDistanceFromMsPos = Math.abs(msAngle - angleTurnedOneQuarter);
             const limitedTickDistanceFromMsPos = Math.min(State.raiseExtent, tickDistanceFromMsPos);
             return map(limitedTickDistanceFromMsPos, 0, State.raiseExtent,
-                State.raisedMarkMaxHeight, State.normalMarkHeight);
+                State.raisedMarkMaxHeight, State.markHeight);
         }
+
+        fill(State.colors.ticks);
 
         for (let tickIndex = 0; tickIndex < State.numTickMarks; ++tickIndex) {
             push();
@@ -106,6 +108,7 @@ function draw() {
     }
 
     function drawAxle() {
+        fill(0);
         push();
         rotateX(PI / 2); // Align with the z axis
         cylinder(State.axleThickness, State.axleLength);
@@ -114,7 +117,7 @@ function draw() {
 
     /**
      * Draws a clock hand.
-     * @param position the position (seconds, minutes, or hours. A real number.
+     * @param position the position (seconds, minutes, or hours). A real number.
      * @param maxUnits 60 or 12
      * @param radius the radius of the cylinder forming the hand
      * @param length the length of the cylinder
@@ -139,17 +142,16 @@ function draw() {
 
     agitateClock(0.1, PI / 8);
 
-    const millisecondsOfCurrentSecond = new Date().getTime() % 1000;
-    const secondPlusFraction = second() + millisecondsOfCurrentSecond / 1000;
+    const msAfterCurrentSecond = new Date().getTime() % 1000;
+
+    drawTickMarks(width * 0.35, msAfterCurrentSecond);
+    drawAxle();
+
+    const secondPlusFraction = second() + msAfterCurrentSecond / 1000;
     const minutesFraction = secondPlusFraction / 60;
     const minutePlusFraction = minute() + minutesFraction;
     const hourPlusFraction = hour() % 12 + minutePlusFraction / 60;
-    State.sound.set(millisecondsOfCurrentSecond, minutesFraction);
-
-    fill(State.colors.ticks);
-    drawTickMarks(width * 0.35, millisecondsOfCurrentSecond);
-    fill(0);
-    drawAxle();
+    State.sound.set(msAfterCurrentSecond, minutesFraction);
 
     drawHand(hourPlusFraction,   12, 9, width / 6, State.colors.hour, 0);
     drawHand(minutePlusFraction, 60, 6, width / 3, State.colors.min, 30);
