@@ -1,9 +1,20 @@
 // 3D Clock
 // Inspired by The Coding Train Coding Challenge #74: Clock with p5.js, https://www.youtube.com/watch?v=E4RyStef-gY
 
+let oscSecs;
+let oscMins;
+
 function setup() {
     const len = Math.min(document.body.clientWidth, window.innerHeight);
     createCanvas(len, len, WEBGL);
+    oscSecs = new p5.Oscillator();
+    oscSecs.setType('sine');
+    oscSecs.freq(880);
+    oscSecs.start();
+    oscMins = new p5.Oscillator();
+    oscMins.setType('sine');
+    oscMins.freq(440);
+    oscMins.start();
 }
 
 function draw() {
@@ -18,9 +29,10 @@ function draw() {
             translate(-distanceFromCenter, 0, 0);
             rotateX(PI / 2); // Align with the z axis
             const raiseExtent = PI / 30;
-            const tickDistanceFromMsPos = Math.min(raiseExtent, Math.abs(msAngle - angleTurnedOneQuarter));
             const markThickness = i % 5 === 0 ? 10 : 5;
-            const markHeight = map(tickDistanceFromMsPos, 0, raiseExtent, 50, 10);
+            const tickDistanceFromMsPos = Math.abs(msAngle - angleTurnedOneQuarter);
+            const limitedTickDistanceFromMsPos = Math.min(raiseExtent, tickDistanceFromMsPos);
+            const markHeight = map(limitedTickDistanceFromMsPos, 0, raiseExtent, 50, 10);
             cylinder(markThickness, markHeight);
             pop();
         }
@@ -50,16 +62,19 @@ function draw() {
     }
 
     /** Moves the entire clock on the y axis sinusoidally, in the manner of a washing machine agitator */
-    function agitateWorld(cyclesPerSecond, maxRotationRadians) {
+    function agitateClock(cyclesPerSecond, maxRotationRadians) {
         const angleOverTime = cyclesPerSecond / 1000 * millis() * PI * 2;
         rotateY(map(Math.sin(angleOverTime), -1, 1, -maxRotationRadians, maxRotationRadians));
     }
 
-    agitateWorld(0.2, PI / 8);
+    agitateClock(0.1, PI / 8);
 
     const millisecondsOfCurrentSecond = new Date().getTime() % 1000;
+    oscSecs.amp(map(millisecondsOfCurrentSecond, 0, 1000, 1, 0));
     const secondPlusFraction = second() + millisecondsOfCurrentSecond / 1000;
-    const minutePlusFraction = minute() + secondPlusFraction / 60;
+    const minutesFraction = secondPlusFraction / 60;
+    oscMins.amp(map(Math.min(1 / 12, minutesFraction), 0, 1 / 12, 1, 0));
+    const minutePlusFraction = minute() + minutesFraction;
     const hourPlusFraction = hour() % 12 + minutePlusFraction / 60;
 
     fill(59, 71, 248);
