@@ -1,20 +1,27 @@
 // 3D Clock
 // Inspired by The Coding Train Coding Challenge #74: Clock with p5.js, https://www.youtube.com/watch?v=E4RyStef-gY
 
-let oscSecs;
-let oscMins;
+State = {
+    oscSecs: null,
+    oscMins: null,
+    /** Used to align the clock “agitation” cycle with a second boundary */
+    navStartMsOffsetFromSecond: window.performance.timing.navigationStart % 1000
+};
 
 function setup() {
     const len = Math.min(document.body.clientWidth, window.innerHeight);
     createCanvas(len, len, WEBGL);
-    oscSecs = new p5.Oscillator();
-    oscSecs.setType('sine');
-    oscSecs.freq(880);
-    oscSecs.start();
-    oscMins = new p5.Oscillator();
-    oscMins.setType('sine');
-    oscMins.freq(440);
-    oscMins.start();
+
+    function startOsc(freq) {
+        const osc = new p5.Oscillator();
+        osc.setType('sine');
+        osc.freq(freq);
+        osc.start();
+        return osc;
+    }
+
+    State.oscSecs = startOsc(880);
+    State.oscMins = startOsc(440);
 }
 
 function draw() {
@@ -63,23 +70,24 @@ function draw() {
 
     /** Moves the entire clock on the y axis sinusoidally, in the manner of a washing machine agitator */
     function agitateClock(cyclesPerSecond, maxRotationRadians) {
-        const angleOverTime = cyclesPerSecond / 1000 * millis() * PI * 2;
+        const angleOverTime = cyclesPerSecond / 1000 * (millis() - State.navStartMsOffsetFromSecond) * PI * 2;
         rotateY(map(Math.sin(angleOverTime), -1, 1, -maxRotationRadians, maxRotationRadians));
     }
 
     agitateClock(0.1, PI / 8);
 
     const millisecondsOfCurrentSecond = new Date().getTime() % 1000;
-    oscSecs.amp(map(millisecondsOfCurrentSecond, 0, 1000, .2, 0));
+    State.oscSecs.amp(map(millisecondsOfCurrentSecond, 0, 1000, 0.2, 0));
     const secondPlusFraction = second() + millisecondsOfCurrentSecond / 1000;
     const minutesFraction = secondPlusFraction / 60;
-    oscMins.amp(map(Math.min(1 / 12, minutesFraction), 0, 1 / 12, .3, 0));
+    const fadeZone = 1 / 12;
+    State.oscMins.amp(map(Math.min(fadeZone, minutesFraction), 0, fadeZone, 0.3, 0));
     const minutePlusFraction = minute() + minutesFraction;
     const hourPlusFraction = hour() % 12 + minutePlusFraction / 60;
 
     fill(59, 71, 248);
     const msAngle = map(millisecondsOfCurrentSecond, 0, 1000, PI * 2, 0);
-    drawTickMarks(width * .35, msAngle);
+    drawTickMarks(width * 0.35, msAngle);
     fill(0);
     drawAxle();
 
