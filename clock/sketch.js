@@ -70,10 +70,10 @@ function draw() {
     agitateClock(0.1, PI / 8);
 
     const millisecondsOfCurrentSecond = new Date().getTime() % 1000;
-    oscSecs.amp(map(millisecondsOfCurrentSecond, 0, 1000, 1, 0));
+    oscSecs.amp(map(millisecondsOfCurrentSecond, 0, 1000, .2, 0));
     const secondPlusFraction = second() + millisecondsOfCurrentSecond / 1000;
     const minutesFraction = secondPlusFraction / 60;
-    oscMins.amp(map(Math.min(1 / 12, minutesFraction), 0, 1 / 12, 1, 0));
+    oscMins.amp(map(Math.min(1 / 12, minutesFraction), 0, 1 / 12, .3, 0));
     const minutePlusFraction = minute() + minutesFraction;
     const hourPlusFraction = hour() % 12 + minutePlusFraction / 60;
 
