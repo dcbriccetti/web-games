@@ -33,12 +33,15 @@ function Sound() {
 
     this.set = function(msOfCurrentSecond, minutesFraction) {
         if (State.soundOn) {
-            State.sound.oscSecs.amp(map(msOfCurrentSecond, 0, 1000, State.maxVolumeSeconds, 0));
+            const rampTime = 0.01;
+            const secsVol = map(msOfCurrentSecond, 0, 1000, State.maxVolumeSeconds, 0);
+            State.sound.oscSecs.amp(secsVol, rampTime);
             const fractionalSecondsAngle = map(msOfCurrentSecond, 0, 1000, 0, TWO_PI);
             State.sound.oscSecs.pan(Math.sin(fractionalSecondsAngle));
             const fadeZone = 1 / 12;
-            const vol = map(Math.min(fadeZone, minutesFraction), 0, fadeZone, State.maxVolumeMinutes, 0);
-            State.sound.oscMins.amp(vol);
+            const minsVol = map(Math.min(fadeZone, minutesFraction), 0, fadeZone,
+                State.maxVolumeMinutes, 0);
+            State.sound.oscMins.amp(minsVol, rampTime);
         } else {
             State.sound.oscSecs.amp(0);
             State.sound.oscMins.amp(0);
@@ -67,7 +70,8 @@ function draw() {
      */
     function drawTickMarks(radius, msOfCurrentSecond) {
         /**
-         * Computes the thickness of a tick mark, based on its tick index. Ticks at hour positions are thicker.
+         * Computes the thickness of a tick mark, based on its tick index. Ticks at hour
+         * positions are thicker.
          * @param tickIndex the index from 0 to the number of tick marks - 1
          * @returns a thickness in pixels
          */
