@@ -2,7 +2,6 @@
 // Inspired by The Coding Train Coding Challenge #74: Clock with p5.js, https://www.youtube.com/watch?v=E4RyStef-gY
 
 State = {
-    soundOn:                true,
     // Used to align the clock “agitation” cycle with a second boundary
     navStartMsSecondOffset: window.performance.timing.navigationStart % 1000,
     numTickMarks:           60,
@@ -13,44 +12,17 @@ State = {
     markHeight:       10,
     axleThickness:          10,
     axleLength:             200,
-    freqSeconds:            880,
-    maxVolumeSeconds:       0.2,
-    freqMinutes:            440,
-    maxVolumeMinutes:       0.3
+    soundOptions: {
+        on:                 true,
+        freqSeconds:        880,
+        maxVolumeSeconds:   0.2,
+        freqMinutes:        440,
+        maxVolumeMinutes:   0.3
+    }
 };
 
-function Sound() {
-    function startOsc(freq) {
-        const osc = new p5.Oscillator();
-        osc.setType('sine');
-        osc.freq(freq);
-        osc.start();
-        return osc;
-    }
-
-    this.oscSecs = startOsc(State.freqSeconds);
-    this.oscMins = startOsc(State.freqMinutes);
-
-    this.set = function(msAfterCurrentSecond, minutesFraction) {
-        if (State.soundOn) {
-            const rampTime = 0.01;
-            const secsVol = map(msAfterCurrentSecond, 0, 1000, State.maxVolumeSeconds, 0);
-            State.sound.oscSecs.amp(secsVol, rampTime);
-            const fractionalSecondsAngle = map(msAfterCurrentSecond, 0, 1000, 0, TWO_PI);
-            State.sound.oscSecs.pan(Math.sin(fractionalSecondsAngle));
-            const fadeZone = 1 / 12;
-            const minsVol = map(Math.min(fadeZone, minutesFraction), 0, fadeZone,
-                State.maxVolumeMinutes, 0);
-            State.sound.oscMins.amp(minsVol, rampTime);
-        } else {
-            State.sound.oscSecs.amp(0);
-            State.sound.oscMins.amp(0);
-        }
-    }
-}
-
 function setup() {
-    State.sound = new Sound();
+    State.sound = new Sound(State.soundOptions);
     State.colors = { // Set this here because the color function isn’t available before
         ticks: color(59, 71, 248),
         hour:  color(51, 136, 217),
@@ -160,6 +132,6 @@ function draw() {
 
 function keyPressed() {
     if (key === 'S') {
-        State.soundOn = !State.soundOn;
+        State.soundOptions.on = !State.soundOptions.on;
     }
 }
