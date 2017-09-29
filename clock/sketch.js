@@ -14,11 +14,12 @@ State = {
     axleLength:             200,
     soundOptions: {
         on:                 true,
-        freqSeconds:        880,
-        maxVolumeSeconds:   0.2,
-        pingSecondsSeconds: 1, // Ping time for second hand, in seconds. Should be ≤ 1.
-        freqMinutes:        440,
-        maxVolumeMinutes:   0.3
+        freqHours:          130.813,
+        maxVolumeHours:     1,
+        freqMinutes:        261.626,
+        maxVolumeMinutes:   0.6,
+        freqSeconds:        523.251,
+        maxVolumeSeconds:   0.3
     }
 };
 
@@ -125,7 +126,7 @@ function draw() {
     const minutesFraction = secondPlusFraction / 60;
     const minutePlusFraction = minute() + minutesFraction;
     const hourPlusFraction = hour() % 12 + minutePlusFraction / 60;
-    State.sound.set(secondsFraction, minutesFraction);
+    State.sound.set(hour() % 12, minute(), secondPlusFraction);
 
     drawHand(hourPlusFraction,   12, 9, width / 6, State.colors.hour, 0);
     drawHand(minutePlusFraction, 60, 6, width / 3, State.colors.min, 30);
