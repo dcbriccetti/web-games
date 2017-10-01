@@ -12,9 +12,10 @@ class Sound {
     set(hours, minutes, secondPlusFraction) {
         const rampTime = 0.01;
         let timeLastSet = 0;
+        const secsSinceStart = int(millis() / 1000);
         if (this.options.on) {
-            if (timeLastSet + 1000 < millis()) {
-                timeLastSet = millis();
+            if (timeLastSet + 1 < secsSinceStart) {
+                timeLastSet = secsSinceStart;
                 this.oscHours.amp(this.options.maxVolumeHours, rampTime);
                 this.soundHours.setFreq(hours);
                 this.oscMins.amp(this.options.maxVolumeMinutes, rampTime);
