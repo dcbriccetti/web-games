@@ -1,5 +1,4 @@
 // Leaving Shapes with Pleasing Sounds
-// Watch it being created here: https://www.youtube.com/watch?v=lLLOu-fxWTU
 
 Settings = {
     scaleChangeSecs:            30,
