@@ -1,3 +1,5 @@
+// Leaving Shapes with pleasing sounds
+
 let shapes = [];
 
 function setup() {
@@ -14,14 +16,14 @@ function draw() {
         const shape = shapes[i];
         shape.draw();
         const distance = shape.move();
-        if (distance > 5000) {
+        if (distance > 3000) {
+            shape.sound.silence();
             deleteIndexes.push(i);
         }
     }
     for (let i = deleteIndexes.length - 1; i > 0; --i) {
         shapes.splice(deleteIndexes[i], 1);
     }
-    console.log(shapes.length);
 
     if (frameCount % 60 === 0) {
         shapes.push(new Shape());
@@ -31,7 +33,7 @@ function draw() {
 class Shape {
     constructor() {
         function rv() {
-            return random(20) - 10;
+            return random(40) - 20;
         }
         this.x = 0;
         this.y = 0;
@@ -40,6 +42,10 @@ class Shape {
         this.dx = rv();
         this.dy = rv();
         this.dz = rv();
+        const freqMult = int(map(this.hue, 0, 255, 1, 10));
+        const fundamental = 220;
+        const freq = fundamental * freqMult;
+        this.sound = new ShapeSound(freq);
     }
 
     draw() {
@@ -54,10 +60,40 @@ class Shape {
         this.x += this.dx;
         this.y += this.dy;
         this.z += this.dz;
-        return this.distance();
+        const unclampedPan = map(this.x, -width / 2, width / 2, -1, 1);
+        this.sound.setPan(max(-1, min(1, unclampedPan)));
+        const dist = this.distance();
+        const maxSoundDist = 1000;
+        this.sound.setAmp(map(min(maxSoundDist, dist),
+            0, maxSoundDist, 0, 0.5));
+        return dist;
     }
 
     distance() {
         return sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
+}
+
+class ShapeSound {
+    constructor(freq) {
+        const osc = new p5.Oscillator();
+        osc.setType('sine');
+        osc.freq(freq);
+        osc.start();
+        this.osc = osc;
+        this.amp = 0.5;
+    }
+
+    setAmp(amp) {
+        console.log(amp);
+        this.osc.amp(amp);
+    }
+
+    setPan(location) {
+        this.osc.pan(location);
+    }
+
+    silence() {
+        this.osc.stop();
     }
 }
