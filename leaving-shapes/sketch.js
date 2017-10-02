@@ -1,6 +1,16 @@
 // Leaving Shapes with Pleasing Sounds
 // Watch it being created here: https://www.youtube.com/watch?v=lLLOu-fxWTU
 
+Settings = {
+    scaleChangeSecs:            30,
+    disappearDistance:          3000,
+    soundAdjustEveryNFrames:    20,
+    creationFrequency: {
+        mean:                   200,
+        stdDev:                 500
+    }
+};
+
 let shapes = [];
 let nextShapeCreateTime;
 
@@ -12,16 +22,18 @@ function setup() {
 }
 
 function draw() {
-    background(0);
+    const scale = int((millis() / 1000 / Settings.scaleChangeSecs)) % 12;
+    background(map(scale, 0, 11, 0, 40));
     let deleteIndexes = [];
     for (let i = 0; i < shapes.length; ++i) {
         const shape = shapes[i];
         shape.draw();
-        const distance = shape.move();
-        if (frameCount % 20 === 0) {
+        shape.move();
+        const distance = shape.distance();
+        if (frameCount % Settings.soundAdjustEveryNFrames === 0) {
             shape.adjustSound(distance);
         }
-        if (distance > 3000) {
+        if (distance > Settings.disappearDistance) {
             shape.sound.silence();
             deleteIndexes.push(i);
         }
@@ -31,78 +43,8 @@ function draw() {
     }
 
     if (millis() > nextShapeCreateTime) {
-        shapes.push(new Shape());
-        nextShapeCreateTime = millis() + randomGaussian(1000, 500);
-    }
-}
-
-class Shape {
-    constructor() {
-        function rv() {
-            return random(10) - 5;
-        }
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
-        this.hue = random(0, 255);
-        this.dx = rv();
-        this.dy = rv();
-        this.dz = rv();
-        const freqMult = int(map(this.hue, 0, 255, 1, 10));
-        const fundamental = 110;
-        const freq = fundamental * freqMult;
-        this.sound = new ShapeSound(freq);
-    }
-
-    draw() {
-        push();
-        translate(this.x, this.y, this.z);
-        fill(this.hue, 255, 255);
-        box(50);
-        pop();
-    }
-
-    move() {
-        this.x += this.dx;
-        this.y += this.dy;
-        this.z += this.dz;
-        const dist = this.distance();
-        return dist;
-    }
-
-    adjustSound(dist) {
-        const unclampedPan = map(this.x, -width / 2, width / 2, -1, 1);
-        this.sound.setPan(max(-1, min(1, unclampedPan)));
-        const maxSoundDist = 1000;
-        this.sound.setAmp(map(min(maxSoundDist, dist),
-            0, maxSoundDist, 0.4, 0));
-    }
-
-    distance() {
-        return sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-    }
-}
-
-class ShapeSound {
-    constructor(freq) {
-        const osc = new p5.Oscillator();
-        osc.setType('sine');
-        osc.freq(freq);
-        osc.amp(0);
-        osc.start();
-        this.osc = osc;
-    }
-
-    setAmp(amp) {
-        console.log(amp);
-        this.osc.amp(amp, 0.2);
-    }
-
-    setPan(location) {
-        this.osc.pan(location);
-    }
-
-    silence() {
-        this.osc.stop(0.2);
+        shapes.push(new Shape(scale));
+        nextShapeCreateTime = millis() + randomGaussian(
+            Settings.creationFrequency.mean, Settings.creationFrequency.stdDev);
     }
 }
