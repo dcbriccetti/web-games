@@ -1,7 +1,9 @@
 // Harmonic Cubes
 
+import Shape from './shape.js';
+
 new p5(p => {
-    Settings = {
+    const Settings = {
         scaleChangeSecs:            15,
         disappearDistance:          3000,
         volume:                     0.5,    // Set by slider
@@ -105,7 +107,7 @@ new p5(p => {
     }
 
     p.windowResized = function() {
-        resizeCanvas(p.windowWidth, p.windowHeight);
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
     };
 
     function changeKeyIfNeeded() {

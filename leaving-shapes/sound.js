@@ -1,4 +1,4 @@
-class ShapeSound {
+export default class ShapeSound {
     constructor(freq, maxAmp, pan, length) {
         const osc = new p5.SinOsc(freq);
         this.osc = osc;

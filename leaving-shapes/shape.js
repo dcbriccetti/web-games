@@ -1,4 +1,6 @@
-class Shape {
+import ShapeSound from './sound.js';
+
+export default class Shape {
     constructor(p, fundamental, length, settings) {
         this.p = p;
         this.length = length;
@@ -8,8 +10,8 @@ class Shape {
         const harmonicFreq = fundamental * harmonicNumber *
             p.random(1 - this.pitchDeviation, 1 + this.pitchDeviation);
         const highestFreq = fundamental * settings.numHarmonics;
-        const freqs = Settings.chromaticScaleFreqs;
-        const highestHarmonicOfHighestKeyFreq = freqs[freqs.length - 1] * Settings.numHarmonics;
+        const freqs = settings.chromaticScaleFreqs;
+        const highestHarmonicOfHighestKeyFreq = freqs[freqs.length - 1] * settings.numHarmonics;
         const x = p.map(harmonicFreq, freqs[0], highestHarmonicOfHighestKeyFreq,
             settings.xMargin, p.width - settings.xMargin * 2);
         this.pos = p.createVector(x, 20, 0);

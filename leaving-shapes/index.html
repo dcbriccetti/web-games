@@ -6,9 +6,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/addons/p5.dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.14/addons/p5.sound.js"></script>
-    <script src="sketch.js"></script>
-    <script src="shape.js"></script>
-    <script src="sound.js"></script>
+    <script type='module' src="sketch.js"></script>
     <style type="text/css">
         body {
             width: 100%;
@@ -18,8 +16,18 @@
             font-size: 70%;
             color: white;
         }
+        #nomodules {
+            display: none;
+        }
     </style>
 </head>
 <body>
+<div id="nomodules">
+    <p>This application uses “ES Modules”, which apparently are not supported or enabled in your browser.</p>
+    <a href="https://jakearchibald.com/2017/es-modules-in-browsers/">More information</a>
+</div>
+<script nomodule>
+    document.getElementById('nomodules').style.display = 'block';
+</script>
 </body>
 </html>
