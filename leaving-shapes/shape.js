@@ -1,42 +1,49 @@
 class Shape {
-    constructor(scale) {
+    constructor(keyIndex, length, settings) {
         function rv() {
-            return random(10) - 5;
+            return random(-5, 5);
         }
+        this.length = length;
+        this.settings = settings;
         this.x = 0;
         this.y = 0;
         this.z = 0;
-        this.hue = random(0, 255);
+        const harmonicNumber = int(random(settings.numHarmonics)) + 1;
+        this.hue = map(harmonicNumber, 1, settings.numHarmonics, 0, 255);
         this.dx = rv();
         this.dy = rv();
         this.dz = rv();
-        const cycleFourthFreqsFromC2 = [
-            65.4064, 87.3071, 116.541, 155.563,
-            51.9131, 69.2957, 92.5986, 123.471,
-            82.4069, 110, 146.832, 195.998
+        const chromaticScaleFreqs = [
+            65.41,
+            69.30,
+            73.42,
+            77.78,
+            82.41,
+            87.31,
+            92.50,
+            98.00,
+            103.83,
+            110.00,
+            116.54,
+            123.47
         ];
-        const fundamental = cycleFourthFreqsFromC2[scale];
-        const freqMult = int(map(this.hue, 0, 255, 1, 10));
-        const freq = fundamental * freqMult;
-        this.type = int(random(2));
-        this.sound = new ShapeSound(freq, this.type);
+        const fundamental = chromaticScaleFreqs[keyIndex];
+        const freqMult = harmonicNumber;
+        const maxPitchDev = 0.1;
+        const pitchDev = (1 - settings.intonation) * maxPitchDev;
+        const freq = fundamental * freqMult * random(1 - pitchDev, 1 + pitchDev);
+        this.sound = new ShapeSound(freq, settings.volume, this.deltaMagnitude());
         this.startMillis = millis();
     }
 
     draw() {
         push();
         translate(this.x, this.y, this.z);
-        const fadeInTimeMs = 1000;
-        fill(this.hue, 100, 100, map(
-            min(fadeInTimeMs, millis() - this.startMillis), 0, fadeInTimeMs, 0, 1));
+        fill(this.hue, 100, 100);
         rotateX(frameCount / 30);
         rotateY(frameCount / 35);
         rotateZ(frameCount / 40);
-        if (this.type === 0) {
-            cylinder(20, 40);
-        } else if (this.type === 1) {
-            box(40);
-        }
+        box(this.length);
         pop();
     }
 
@@ -46,15 +53,16 @@ class Shape {
         this.z += this.dz;
     }
 
-    adjustSound(dist) {
+    adjustSound() {
         const unclampedPan = map(this.x, -width / 2, width / 2, -1, 1);
-        this.sound.setPan(max(-1, min(1, unclampedPan)));
-        const maxSoundDist = 1000;
-        this.sound.setAmp(map(min(maxSoundDist, dist),
-            0, maxSoundDist, 0.4, 0));
+        this.sound.setPan(constrain(unclampedPan, -1, 1));
     }
 
     distance() {
         return sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
+
+    deltaMagnitude() {
+        return sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
     }
 }
