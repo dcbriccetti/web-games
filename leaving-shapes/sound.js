@@ -1,6 +1,5 @@
 class ShapeSound {
     constructor(freq, maxAmp, length) {
-        console.log(freq, maxAmp, length);
         const osc = new p5.SinOsc(freq);
         this.osc = osc;
         if (maxAmp > 0) {

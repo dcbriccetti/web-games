@@ -96,11 +96,10 @@ function draw() {
         const shape = shapes[i];
         shape.draw();
         shape.move();
-        const distance = shape.distance();
         if (frameCount % Settings.soundAdjustEveryNFrames === 0) {
             shape.adjustSound();
         }
-        if (distance > Settings.disappearDistance) {
+        if (shape.pos.mag() > Settings.disappearDistance) {
             shape.sound.osc.stop();
             deleteIndexes.push(i);
         }

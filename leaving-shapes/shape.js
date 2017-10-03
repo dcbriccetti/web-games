@@ -1,18 +1,12 @@
 class Shape {
     constructor(keyIndex, length, settings) {
-        function rv() {
-            return random(-5, 5);
-        }
         this.length = length;
         this.settings = settings;
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+        this.pos = createVector();
+        this.velocity = p5.Vector.random3D();
+        this.velocity.mult(5);
         const harmonicNumber = int(random(settings.numHarmonics)) + 1;
         this.hue = map(harmonicNumber, 1, settings.numHarmonics, 0, 255);
-        this.dx = rv();
-        this.dy = rv();
-        this.dz = rv();
         const chromaticScaleFreqs = [
             65.41,
             69.30,
@@ -32,13 +26,13 @@ class Shape {
         const maxPitchDev = 0.1;
         const pitchDev = (1 - settings.intonation) * maxPitchDev;
         const freq = fundamental * freqMult * random(1 - pitchDev, 1 + pitchDev);
-        this.sound = new ShapeSound(freq, settings.volume, this.deltaMagnitude());
+        this.sound = new ShapeSound(freq, settings.volume, this.velocity.mag());
         this.startMillis = millis();
     }
 
     draw() {
         push();
-        translate(this.x, this.y, this.z);
+        translate(this.pos.x, this.pos.y, this.pos.z);
         fill(this.hue, 100, 100);
         rotateX(frameCount / 30);
         rotateY(frameCount / 35);
@@ -48,21 +42,11 @@ class Shape {
     }
 
     move() {
-        this.x += this.dx;
-        this.y += this.dy;
-        this.z += this.dz;
+        this.pos.add(this.velocity);
     }
 
     adjustSound() {
-        const unclampedPan = map(this.x, -width / 2, width / 2, -1, 1);
+        const unclampedPan = map(this.pos.x, -width / 2, width / 2, -1, 1);
         this.sound.setPan(constrain(unclampedPan, -1, 1));
-    }
-
-    distance() {
-        return sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-    }
-
-    deltaMagnitude() {
-        return sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
     }
 }
