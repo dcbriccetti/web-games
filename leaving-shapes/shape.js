@@ -8,35 +8,23 @@ class Shape {
         const harmonicNumber = int(random(settings.numHarmonics)) + 1;
         this.hue = map(harmonicNumber, 1, settings.numHarmonics, 0, 255);
         const chromaticScaleFreqs = [
-            65.41,
-            69.30,
-            73.42,
-            77.78,
-            82.41,
-            87.31,
-            92.50,
-            98.00,
-            103.83,
-            110.00,
-            116.54,
-            123.47
+            65.41, 69.30, 73.42, 77.78,
+            82.41, 87.31, 92.50, 98.00,
+            103.83, 110.00, 116.54, 123.47
         ];
         const fundamental = chromaticScaleFreqs[keyIndex];
-        const freqMult = harmonicNumber;
-        const maxPitchDev = 0.1;
-        const pitchDev = (1 - settings.intonation) * maxPitchDev;
-        const freq = fundamental * freqMult * random(1 - pitchDev, 1 + pitchDev);
+        const maxPitchDeviation = 0.1;
+        this.pitchDeviation = (1 - settings.intonation) * maxPitchDeviation;
+        const freq = fundamental * harmonicNumber *
+            random(1 - this.pitchDeviation, 1 + this.pitchDeviation);
         this.sound = new ShapeSound(freq, settings.volume, this.velocity.mag());
-        this.startMillis = millis();
     }
 
     draw() {
         push();
         translate(this.pos.x, this.pos.y, this.pos.z);
         fill(this.hue, 100, 100);
-        rotateX(frameCount / 30);
-        rotateY(frameCount / 35);
-        rotateZ(frameCount / 40);
+        rotateY(frameCount * this.pitchDeviation);
         box(this.length);
         pop();
     }

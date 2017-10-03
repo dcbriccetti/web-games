@@ -88,7 +88,7 @@ function windowResized() {
 function changeKeyIfNeeded() {
     if (millis() > nextKeyChangeTime) {
         nextKeyChangeTime = millis() + Settings.scaleChangeSecs * 1000;
-        switch (keyChangeSelect.elt.selectedIndex) {
+        switch (Settings.keyChangeStyle) {
             case 0:
                 keyIndex = (keyIndex + 5) % 12;
                 break;
@@ -106,7 +106,7 @@ function changeKeyIfNeeded() {
 
 function createNewShapeIfTime() {
     if (millis() > nextShapeCreateTime) {
-        shapes.push(new Shape(keyIndex, min(width, height) / 25, Settings));
+        shapes.push(new Shape(keyIndex, min(width, height) / 20, Settings));
         const delayMin = 100;
         const delayMax = 5000;
         const delayRange = delayMax - delayMin;
