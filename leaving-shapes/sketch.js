@@ -24,7 +24,30 @@ let nextKeyChangeTime;
 
 function setup() {
     createCanvas(windowWidth, windowHeight, WEBGL);
+    createKnobs();
+    colorMode(HSB);
+    nextShapeCreateTime = millis();
+    nextKeyChangeTime = millis() + Settings.scaleChangeSecs * 1000;
+}
 
+function draw() {
+    Settings.volume = volumeSlider.value();
+    Settings.intonation = intonationSlider.value();
+    Settings.numHarmonics = numHarmonicsSlider.value();
+    changeKeyIfNeeded();
+    background(map(keyIndex, 0, 11, 0, 40));
+    shapes.forEach(shape => {
+        shape.draw();
+        shape.move();
+        if (frameCount % Settings.soundAdjustEveryNFrames === 0) {
+            shape.adjustSound();
+        }
+    });
+    removeDistantShapes();
+    createNewShapeIfTime();
+}
+
+function createKnobs() {
     function createLabel(text, x, y) {
         const lbl = createSpan(text);
         lbl.position(x, y);
@@ -55,25 +78,17 @@ function setup() {
     keyChangeSelect.option("Random");
     keyChangeSelect.option("None");
     keyChangeSelect.changed(() => {
-       Settings.keyChangeStyle = keyChangeSelect.elt.selectedIndex;
+        Settings.keyChangeStyle = keyChangeSelect.elt.selectedIndex;
     });
     keyChangeSelect.position(10, y += 20);
     createLabel('Key Change', keyChangeSelect.x * 2 + intonationSlider.width, keyChangeSelect.y);
-
-    colorMode(HSB);
-    nextShapeCreateTime = millis();
-    nextKeyChangeTime = millis() + Settings.scaleChangeSecs * 1000;
 }
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
 
-function draw() {
-    Settings.volume = volumeSlider.value();
-    Settings.intonation = intonationSlider.value();
-    Settings.numHarmonics = numHarmonicsSlider.value();
-
+function changeKeyIfNeeded() {
     if (millis() > nextKeyChangeTime) {
         nextKeyChangeTime = millis() + Settings.scaleChangeSecs * 1000;
         switch (keyChangeSelect.elt.selectedIndex) {
@@ -87,27 +102,12 @@ function draw() {
                 keyIndex = int(random(12));
                 break;
             default:
-                // Don’t change the key
+            // Don’t change the key
         }
     }
-    background(map(keyIndex, 0, 11, 0, 40));
-    let deleteIndexes = [];
-    for (let i = 0; i < shapes.length; ++i) {
-        const shape = shapes[i];
-        shape.draw();
-        shape.move();
-        if (frameCount % Settings.soundAdjustEveryNFrames === 0) {
-            shape.adjustSound();
-        }
-        if (shape.pos.mag() > Settings.disappearDistance) {
-            shape.sound.osc.stop();
-            deleteIndexes.push(i);
-        }
-    }
-    for (let i = deleteIndexes.length - 1; i >= 0; --i) {
-        shapes.splice(deleteIndexes[i], 1);
-    }
+}
 
+function createNewShapeIfTime() {
     if (millis() > nextShapeCreateTime) {
         shapes.push(new Shape(keyIndex, min(width, height) / 20, Settings));
         const delayMin = 100;
@@ -116,5 +116,19 @@ function draw() {
         const delay = delayMax - delayRange * speedSlider.value();
         nextShapeCreateTime = millis() + randomGaussian(
             delay, Settings.creationFrequency.stdDev);
+    }
+}
+
+function removeDistantShapes() {
+    let deleteIndexes = [];
+    for (let i = 0; i < shapes.length; ++i) {
+        const shape = shapes[i];
+        if (shape.pos.mag() > Settings.disappearDistance) {
+            shape.sound.osc.stop();
+            deleteIndexes.push(i);
+        }
+    }
+    for (let i = deleteIndexes.length - 1; i >= 0; --i) {
+        shapes.splice(deleteIndexes[i], 1);
     }
 }
