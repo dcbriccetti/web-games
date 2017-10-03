@@ -7,6 +7,7 @@ Settings = {
     volume:                     0.5,    // Set by slider
     numHarmonics:               8,      // Set by slider
     intonation:                 1,      // Set by slider
+    speed:                      0.8,    // Set by slider
     keyChangeStyle:             0,      // Set by control
     creationFrequency: {
         mean:                   200,
@@ -16,9 +17,6 @@ Settings = {
 
 let shapes = [];
 let nextShapeCreateTime;
-let volumeSlider;
-let intonationSlider;
-let speedSlider;
 let keyIndex = 0;
 let nextKeyChangeTime;
 
@@ -31,9 +29,6 @@ function setup() {
 }
 
 function draw() {
-    Settings.volume = volumeSlider.value();
-    Settings.intonation = intonationSlider.value();
-    Settings.numHarmonics = numHarmonicsSlider.value();
     changeKeyIfNeeded();
     background(map(keyIndex, 0, 11, 0, 40));
     shapes.forEach(shape => {
@@ -56,32 +51,34 @@ function createKnobs() {
     }
 
     let y = 0;
-    volumeSlider = createSlider(0, 1, 0.2, 0.05);
-    volumeSlider.position(10, y += 20);
-    createLabel('Volume', volumeSlider.x * 2 + volumeSlider.width, volumeSlider.y);
+    const volume = createSlider(0, 1, 0.2, 0.05);
+    volume.changed(() => Settings.volume = volume.value());
+    volume.position(10, y += 20);
+    createLabel('Volume', volume.x * 2 + volume.width, volume.y);
 
-    numHarmonicsSlider = createSlider(1, 40, Settings.numHarmonics, 1);
-    numHarmonicsSlider.position(10, y += 20);
-    createLabel('Number of Harmonics', numHarmonicsSlider.x * 2 + numHarmonicsSlider.width, numHarmonicsSlider.y);
+    const numHarmonics = createSlider(1, 40, Settings.numHarmonics, 1);
+    numHarmonics.changed(() => Settings.numHarmonics = numHarmonics.value());
+    numHarmonics.position(10, y += 20);
+    createLabel('Number of Harmonics', numHarmonics.x * 2 + numHarmonics.width, numHarmonics.y);
 
-    intonationSlider = createSlider(0, 1, 1, 0.05);
-    intonationSlider.position(10, y += 20);
-    createLabel('Intonation', intonationSlider.x * 2 + intonationSlider.width, intonationSlider.y);
+    const intonation = createSlider(0, 1, 1, 0.05);
+    intonation.changed(() => Settings.intonation = intonation.value());
+    intonation.position(10, y += 20);
+    createLabel('Intonation', intonation.x * 2 + intonation.width, intonation.y);
 
-    speedSlider = createSlider(0, 1, 0.8, 0.05);
-    speedSlider.position(10, y += 20);
-    createLabel('Generation Speed', speedSlider.x * 2 + speedSlider.width, speedSlider.y);
+    const speed = createSlider(0, 1, Settings.speed, 0.05);
+    speed.changed(() => Settings.speed = speed.value());
+    speed.position(10, y += 20);
+    createLabel('Generation Speed', speed.x * 2 + speed.width, speed.y);
 
-    keyChangeSelect = createSelect();
-    keyChangeSelect.option("Cycle of fourths");
-    keyChangeSelect.option("Incremental");
-    keyChangeSelect.option("Random");
-    keyChangeSelect.option("None");
-    keyChangeSelect.changed(() => {
-        Settings.keyChangeStyle = keyChangeSelect.elt.selectedIndex;
-    });
-    keyChangeSelect.position(10, y += 20);
-    createLabel('Key Change', keyChangeSelect.x * 2 + intonationSlider.width, keyChangeSelect.y);
+    const keyChange = createSelect();
+    keyChange.option("Cycle of fourths");
+    keyChange.option("Incremental");
+    keyChange.option("Random");
+    keyChange.option("None");
+    keyChange.changed(() => Settings.keyChangeStyle = keyChange.elt.selectedIndex);
+    keyChange.position(10, y += 20);
+    createLabel('Key Change', keyChange.x * 2 + intonation.width, keyChange.y);
 }
 
 function windowResized() {
@@ -109,13 +106,12 @@ function changeKeyIfNeeded() {
 
 function createNewShapeIfTime() {
     if (millis() > nextShapeCreateTime) {
-        shapes.push(new Shape(keyIndex, min(width, height) / 20, Settings));
+        shapes.push(new Shape(keyIndex, min(width, height) / 25, Settings));
         const delayMin = 100;
         const delayMax = 5000;
         const delayRange = delayMax - delayMin;
-        const delay = delayMax - delayRange * speedSlider.value();
-        nextShapeCreateTime = millis() + randomGaussian(
-            delay, Settings.creationFrequency.stdDev);
+        const delay = delayMax - delayRange * Settings.speed;
+        nextShapeCreateTime = millis() + randomGaussian(delay, Settings.creationFrequency.stdDev);
     }
 }
 
