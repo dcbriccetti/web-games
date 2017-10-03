@@ -21,6 +21,8 @@ var dragAccel = {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
         this.dKey.onDown.add(this.handleDButton, this);
+        this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.spaceKey.onDown.add(this.handleSpaceButton, this);
     },
 
     update: function() {
@@ -60,6 +62,10 @@ var dragAccel = {
         this.ship.body.drag.set(this.ship.body.drag.x + change);
     },
     
+    handleSpaceButton: function() {
+        this.ship.body.velocity.set(0, 0);
+    },
+    
     createOscillator: function() {
         var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         var oscillator = audioCtx.createOscillator();
@@ -73,6 +79,6 @@ var dragAccel = {
     }
 };
     
-var game = new Phaser.Game(window.innerWidth - 8 * 2, window.innerHeight * .7);
+var game = new Phaser.Game(800, 400);
 game.state.add('Game', dragAccel);
 game.state.start('Game');
