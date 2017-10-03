@@ -1,18 +1,24 @@
 // Leaving Shapes with Pleasing Sounds
 
 Settings = {
-    scaleChangeSecs:            30,
+    scaleChangeSecs:            15,
     disappearDistance:          3000,
-    soundAdjustEveryNFrames:    20,
     volume:                     0.5,    // Set by slider
     numHarmonics:               8,      // Set by slider
     intonation:                 1,      // Set by slider
     speed:                      0.8,    // Set by slider
     keyChangeStyle:             0,      // Set by control
+    maxPitchDeviation:          0.1,
     creationFrequency: {
         mean:                   200,
         stdDev:                 100
-    }
+    },
+    chromaticScaleFreqs: [
+        65.41, 69.30, 73.42, 77.78,
+        82.41, 87.31, 92.50, 98.00,
+        103.83, 110.00, 116.54, 123.47
+    ],
+    xMargin:                    40
 };
 
 let shapes = [];
@@ -30,16 +36,32 @@ function setup() {
 
 function draw() {
     changeKeyIfNeeded();
-    background(map(keyIndex, 0, 11, 0, 40));
+    background(0);
+    translate(-width / 2, height / 2, 0);
+    scale(1, -1, 1);
+    drawHarmonicPaths();
     shapes.forEach(shape => {
         shape.draw();
         shape.move();
-        if (frameCount % Settings.soundAdjustEveryNFrames === 0) {
-            shape.adjustSound();
-        }
     });
     removeDistantShapes();
     createNewShapeIfTime();
+}
+
+function drawHarmonicPaths() {
+    for (let hi = 1; hi <= Settings.numHarmonics; ++hi) {
+        const freqs = Settings.chromaticScaleFreqs;
+        const fundamental = freqs[keyIndex];
+        const harmonicFreq = fundamental * hi;
+        const highestHarmonicOfHighestKeyFreq = freqs[freqs.length - 1] * Settings.numHarmonics;
+        const x = map(harmonicFreq, freqs[0], highestHarmonicOfHighestKeyFreq,
+            Settings.xMargin, width - Settings.xMargin * 2);
+        push();
+        translate(x, 0, 0);
+        fill(0, 0, 32);
+        plane(2, height * 2);
+        pop();
+    }
 }
 
 function createKnobs() {
@@ -106,7 +128,7 @@ function changeKeyIfNeeded() {
 
 function createNewShapeIfTime() {
     if (millis() > nextShapeCreateTime) {
-        shapes.push(new Shape(keyIndex, min(width, height) / 20, Settings));
+        shapes.push(new Shape(Settings.chromaticScaleFreqs[keyIndex], width / 40, Settings));
         const delayMin = 100;
         const delayMax = 5000;
         const delayRange = delayMax - delayMin;

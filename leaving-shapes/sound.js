@@ -1,5 +1,5 @@
 class ShapeSound {
-    constructor(freq, maxAmp, length) {
+    constructor(freq, maxAmp, pan, length) {
         const osc = new p5.SinOsc(freq);
         this.osc = osc;
         if (maxAmp > 0) {
@@ -9,12 +9,9 @@ class ShapeSound {
             // set attackLevel, releaseLevel
             envelope.setRange(maxAmp, 0);
             osc.amp(envelope);
+            osc.pan(pan);
             osc.start();
             envelope.play();
         }
-    }
-
-    setPan(location) {
-        this.osc.pan(location);
     }
 }

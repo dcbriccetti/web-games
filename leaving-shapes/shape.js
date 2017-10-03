@@ -1,40 +1,32 @@
 class Shape {
-    constructor(keyIndex, length, settings) {
+    constructor(fundamental, length, settings) {
         this.length = length;
-        this.settings = settings;
-        this.pos = createVector();
-        this.velocity = p5.Vector.random3D();
-        this.velocity.mult(5);
         const harmonicNumber = int(random(settings.numHarmonics)) + 1;
         this.hue = map(harmonicNumber, 1, settings.numHarmonics, 0, 255);
-        const chromaticScaleFreqs = [
-            65.41, 69.30, 73.42, 77.78,
-            82.41, 87.31, 92.50, 98.00,
-            103.83, 110.00, 116.54, 123.47
-        ];
-        const fundamental = chromaticScaleFreqs[keyIndex];
-        const maxPitchDeviation = 0.1;
-        this.pitchDeviation = (1 - settings.intonation) * maxPitchDeviation;
-        const freq = fundamental * harmonicNumber *
+        this.pitchDeviation = (1 - settings.intonation) * settings.maxPitchDeviation;
+        const harmonicFreq = fundamental * harmonicNumber *
             random(1 - this.pitchDeviation, 1 + this.pitchDeviation);
-        this.sound = new ShapeSound(freq, settings.volume, this.velocity.mag());
+        const highestFreq = fundamental * settings.numHarmonics;
+        const freqs = Settings.chromaticScaleFreqs;
+        const highestHarmonicOfHighestKeyFreq = freqs[freqs.length - 1] * Settings.numHarmonics;
+        const x = map(harmonicFreq, freqs[0], highestHarmonicOfHighestKeyFreq,
+            settings.xMargin, width - settings.xMargin * 2);
+        this.pos = createVector(x, 20, 0);
+        this.velocity = createVector(0, 0.5, 0);
+        this.velocity.mult(5);
+        const pan = map(harmonicFreq, fundamental, highestFreq, -0.8, 0.8);
+        this.sound = new ShapeSound(harmonicFreq, settings.volume, pan, this.velocity.mag());
     }
 
     draw() {
         push();
         translate(this.pos.x, this.pos.y, this.pos.z);
-        fill(this.hue, 100, 100);
-        rotateY(frameCount * this.pitchDeviation);
+        fill(this.hue, 100, map(this.pos.y, 0, height, 100, 20));
         box(this.length);
         pop();
     }
 
     move() {
         this.pos.add(this.velocity);
-    }
-
-    adjustSound() {
-        const unclampedPan = map(this.pos.x, -width / 2, width / 2, -1, 1);
-        this.sound.setPan(constrain(unclampedPan, -1, 1));
     }
 }
