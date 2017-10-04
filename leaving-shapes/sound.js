@@ -1,13 +1,13 @@
 export default class ShapeSound {
-    constructor(freq, maxAmp, pan, length) {
-        const osc = new p5.SinOsc(freq);
+    constructor(frequency, maxAmplitude, pan, noteLength) {
+        const osc = new p5.SinOsc(frequency);
         this.osc = osc;
-        if (maxAmp > 0) {
+        if (maxAmplitude > 0) {
             const envelope = new p5.Env();
             // set attackTime, decayTime, sustainRatio, releaseTime
-            envelope.setADSR(0.001, length, 0.1, 0.5);
+            envelope.setADSR(0.001, noteLength, 0.1, 0.5);
             // set attackLevel, releaseLevel
-            envelope.setRange(maxAmp, 0);
+            envelope.setRange(maxAmplitude, 0);
             osc.amp(envelope);
             osc.pan(pan);
             osc.start();

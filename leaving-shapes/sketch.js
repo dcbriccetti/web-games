@@ -24,6 +24,23 @@ new p5(p => {
         xMargin:                    40
     };
 
+    /**
+     * Calculates the x coordinate from a harmonic frequency, considering the entire
+     * range of frequencies produced in the program.
+     * @param harmonicFreq the frequency from which the x coordinate is to be calculated
+     * @returns the x coordinate
+     */
+    function getHarmonicX(harmonicFreq) {
+        const freqs = Settings.chromaticScaleFreqs;
+        const lowestKeyFundamental = freqs[0];
+        const highestKeyFundamental = freqs[freqs.length - 1];
+        const highestHarmonicOfHighestKey =
+            highestKeyFundamental * Settings.numHarmonics;
+
+        return p.map(harmonicFreq, lowestKeyFundamental, highestHarmonicOfHighestKey,
+            Settings.xMargin, p.width - Settings.xMargin * 2);
+    }
+
     let shapes = [];
     let nextShapeCreateTime;
     let keyIndex = 0;
@@ -56,11 +73,8 @@ new p5(p => {
             const freqs = Settings.chromaticScaleFreqs;
             const fundamental = freqs[keyIndex];
             const harmonicFreq = fundamental * hi;
-            const highestHarmonicOfHighestKeyFreq = freqs[freqs.length - 1] * Settings.numHarmonics;
-            const x = p.map(harmonicFreq, freqs[0], highestHarmonicOfHighestKeyFreq,
-                Settings.xMargin, p.width - Settings.xMargin * 2);
             p.push();
-            p.translate(x, 0, 0);
+            p.translate(getHarmonicX(harmonicFreq), 0, 0);
             p.fill(0, 0, 32);
             p.plane(2, p.height * 2);
             p.pop();
@@ -131,7 +145,8 @@ new p5(p => {
 
     function createNewShapeIfTime() {
         if (p.millis() > nextShapeCreateTime) {
-            shapes.push(new Shape(p, Settings.chromaticScaleFreqs[keyIndex], p.width / 40, Settings));
+            shapes.push(new Shape(p, getHarmonicX,
+                Settings.chromaticScaleFreqs[keyIndex], p.width / 40, Settings));
             const delayMin = 100;
             const delayMax = 5000;
             const delayRange = delayMax - delayMin;
