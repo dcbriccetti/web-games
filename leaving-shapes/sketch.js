@@ -82,42 +82,29 @@ new p5(p => {
     }
 
     function createKnobs() {
-        function createLabel(text, x, y) {
-            const lbl = p.createSpan(text);
-            lbl.position(x, y);
-            lbl.elt.className = 'label';
-            return lbl;
-        }
-
-        let y = 0;
-        const volume = p.createSlider(0, 1, 0.2, 0.05);
+        const volume = p.select('#volume');
+        volume.value(Settings.volume);
         volume.changed(() => Settings.volume = volume.value());
-        volume.position(10, y += 20);
-        createLabel('Volume', volume.x * 2 + volume.width, volume.y);
 
-        const numHarmonics = p.createSlider(1, 40, Settings.numHarmonics, 1);
+        const numHarmonics = p.select('#numHarmonics');
+        numHarmonics.value(Settings.numHarmonics);
         numHarmonics.changed(() => Settings.numHarmonics = numHarmonics.value());
-        numHarmonics.position(10, y += 20);
-        createLabel('Number of Harmonics', numHarmonics.x * 2 + numHarmonics.width, numHarmonics.y);
 
-        const intonation = p.createSlider(0, 1, 1, 0.05);
+        const intonation = p.select('#intonation');
+        intonation.value(Settings.intonation);
         intonation.changed(() => Settings.intonation = intonation.value());
-        intonation.position(10, y += 20);
-        createLabel('Intonation', intonation.x * 2 + intonation.width, intonation.y);
 
-        const speed = p.createSlider(0, 1, Settings.speed, 0.05);
+        const speed = p.select('#speed');
+        speed.value(Settings.speed);
         speed.changed(() => Settings.speed = speed.value());
-        speed.position(10, y += 20);
-        createLabel('Generation Speed', speed.x * 2 + speed.width, speed.y);
 
-        const keyChange = p.createSelect();
+        const keyChange = p.createSelect(); // Using select resulted in a p5 error
         keyChange.option("Cycle of fourths");
         keyChange.option("Incremental");
         keyChange.option("Random");
         keyChange.option("None");
+        keyChange.parent('#keyChangeParent');
         keyChange.changed(() => Settings.keyChangeStyle = keyChange.elt.selectedIndex);
-        keyChange.position(10, y += 20);
-        createLabel('Key Change', keyChange.x * 2 + intonation.width, keyChange.y);
     }
 
     p.windowResized = function() {
@@ -135,7 +122,7 @@ new p5(p => {
                     keyIndex = (keyIndex + 1) % 12;
                     break;
                 case 2:
-                    keyIndex = int(random(12));
+                    keyIndex = p.int(p.random(12));
                     break;
                 default:
                 // Don’t change the key

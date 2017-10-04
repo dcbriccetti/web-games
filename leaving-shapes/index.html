@@ -19,6 +19,12 @@
         #nomodules {
             display: none;
         }
+        #controls {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.3);
+            margin: .3em;
+            padding: .2em;
+        }
     </style>
 </head>
 <body>
@@ -29,5 +35,47 @@
 <script nomodule>
     document.getElementById('nomodules').style.display = 'block';
 </script>
+<div id='controls'>
+    <table>
+        <tr>
+            <td>
+                <label for="volume" class="label">Volume</label>
+            </td>
+            <td>
+                <input id='volume' type="range" min="0" max="1" step="0.05">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="numHarmonics" class="label">Number of Harmonics</label>
+            </td>
+            <td>
+                <input id='numHarmonics' type="range" min="1" max="40" step="1">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="intonation" class="label">Intonation</label>
+            </td>
+            <td>
+                <input id="intonation" type="range" min="0" max="1" step="0.05">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="speed" class="label">Generation Speed</label>
+            </td>
+            <td>
+                <input id='speed' type="range" min="0" max="1" step="0.05">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="keyChange" class="label">Key Change</label>
+            </td>
+            <td id="keyChangeParent"></td>
+        </tr>
+    </table>
+</div>
 </body>
 </html>
