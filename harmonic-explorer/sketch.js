@@ -21,6 +21,7 @@ new p5(p => {
             82.41, 87.31, 92.50, 98.00,
             103.83, 110.00, 116.54, 123.47
         ],
+        keyNames:                   'C D♭ D E♭ E F G♭ G A♭ A B♭ B'.split(' '),
         xMargin:                    40
     };
 
@@ -105,6 +106,8 @@ new p5(p => {
         keyChange.option("None");
         keyChange.parent('#keyChangeParent');
         keyChange.changed(() => Settings.keyChangeStyle = keyChange.elt.selectedIndex);
+
+        displayKey();
     }
 
     p.windowResized = function() {
@@ -127,7 +130,12 @@ new p5(p => {
                 default:
                 // Don’t change the key
             }
+            displayKey();
         }
+    }
+
+    function displayKey() {
+        p.select('#key').elt.textContent = Settings.keyNames[keyIndex];
     }
 
     function createNewShapeIfTime() {
