@@ -23,6 +23,7 @@ Simple.Game.prototype = {
         this.enemy  = this.add.sprite(10, this.world.height - 10, 'enemy');
         this.physics.enable(this.player, Phaser.Physics.ARCADE);
         this.physics.enable(this.enemy,  Phaser.Physics.ARCADE);
+        this.player.body.collideWorldBounds = true;
         this.enemy.body.collideWorldBounds = true;
         this.enemy.body.bounce = 0.2;
         this.player.body.drag.set(100);
@@ -57,7 +58,7 @@ Simple.Game.prototype = {
             }
             this.player.body.velocity.set(playerVelX, playerVelY);
 
-            if (++this.frameNumber % 30 == 0) {
+            if (++this.frameNumber % 10 == 0) {
                 var xVel = game.rnd.integerInRange(-800, 800);
                 var yVel = game.rnd.integerInRange(-800, 800);
                 this.enemy.body.velocity.set(xVel, yVel);
