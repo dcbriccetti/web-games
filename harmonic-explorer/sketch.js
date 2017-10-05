@@ -1,4 +1,4 @@
-// Harmonic Cubes
+// Harmonic Explorer
 
 import Shape from './shape.js';
 
@@ -16,10 +16,6 @@ new p5(p => {
         waveType:                   0,      // Set by control
         vibratoWaveType:            0,      // Set by control
         maxPitchDeviation:          0.1,
-        creationFrequency: {
-            mean:                   200,
-            stdDev:                 100
-        },
         chromaticScaleFreqs: [
             65.41, 69.30, 73.42, 77.78,
             82.41, 87.31, 92.50, 98.00,
@@ -29,6 +25,11 @@ new p5(p => {
         xMargin:                    40,
         waves:                      ['sine', 'triangle', 'sawtooth', 'square']
     };
+
+    let shapes = [];
+    let nextShapeCreateTime;
+    let keyIndex = 0;
+    let nextKeyChangeTime;
 
     /**
      * Calculates the x coordinate from a harmonic frequency, considering the entire
@@ -47,11 +48,6 @@ new p5(p => {
             Settings.xMargin, p.width - Settings.xMargin * 2);
     }
 
-    let shapes = [];
-    let nextShapeCreateTime;
-    let keyIndex = 0;
-    let nextKeyChangeTime;
-
     p.setup = function() {
         p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL);
         createKnobs();
@@ -66,11 +62,10 @@ new p5(p => {
         p.translate(-p.width / 2, p.height / 2, 0);
         p.scale(1, -1, 1);
         drawHarmonicPaths();
+        removeDistantShapes();
         shapes.forEach(shape => {
             shape.draw();
-            shape.move();
         });
-        removeDistantShapes();
         createNewShapeIfTime();
     };
 
@@ -128,10 +123,8 @@ new p5(p => {
         speed.changed(() => Settings.speed = speed.value());
 
         const keyChange = p.createSelect(); // Using select resulted in a p5 error
-        keyChange.option("Cycle of fourths");
-        keyChange.option("Incremental");
-        keyChange.option("Random");
-        keyChange.option("None");
+        ["Cycle of fourths", "Incremental", "Random", "None"].forEach(name =>
+            keyChange.option(name));
         keyChange.parent('#keyChangeParent');
         keyChange.changed(() => Settings.keyChangeStyle = keyChange.elt.selectedIndex);
 
@@ -174,7 +167,7 @@ new p5(p => {
             const delayMax = 5000;
             const delayRange = delayMax - delayMin;
             const delay = delayMax - delayRange * Settings.speed;
-            nextShapeCreateTime = p.millis() + p.randomGaussian(delay, Settings.creationFrequency.stdDev);
+            nextShapeCreateTime = p.millis() + p.randomGaussian(delay, delay / 2);
         }
     }
 
@@ -182,7 +175,7 @@ new p5(p => {
         let deleteIndexes = [];
         for (let i = 0; i < shapes.length; ++i) {
             const shape = shapes[i];
-            if (shape.pos.mag() > Settings.disappearDistance) {
+            if (shape.completeRatio(p) >= 1) {
                 shape.sound.stop();
                 deleteIndexes.push(i);
             }
