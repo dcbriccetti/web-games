@@ -12,7 +12,8 @@ export default class Shape {
         this.pos = p.createVector(getHarmonicX(harmonicFreq), 20, 0);
         this.velocity = p.createVector(0, 0.5, 0);
         this.velocity.mult(5);
-        const pan = p.map(harmonicFreq, fundamental, fundamental * settings.numHarmonics, -0.8, 0.8);
+        const pan = settings.numHarmonics === 1 ? 0 :
+            p.map(harmonicFreq, fundamental, fundamental * settings.numHarmonics, -0.8, 0.8);
         this.sound = new ShapeSound(harmonicFreq, settings.volume, pan, this.velocity.mag());
     }
 
