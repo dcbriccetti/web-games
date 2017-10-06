@@ -1,6 +1,4 @@
-Game = function(game) {};
-
-Game.prototype = {
+const menaceWhackers = {
     levelDefs:          null,
     level:              1,
     score:              0,
@@ -24,39 +22,39 @@ Game.prototype = {
     },
     
     preload: function() {
-        var i, levelDef, dim;
-        var ldef = this.levelDef;
+        const ldef = this.levelDef;
         this.levelDefs = [
             ldef('Leaf Blowers', 'BlowerSpriteSheet.png', [68, 96], 'blower.wav', [0, 1, 2, 3, 4, 5, 6])
         ];
-        for (i = 0; i < this.levelDefs.length; ++i) {
-            levelDef = this.levelDefs[i];
-            dim = levelDef.menaceDimensions;
-            game.load.spritesheet(levelDef.menaceName, 'assets/' + levelDef.menaceSpritesheet, dim[0], dim[1]);
-            game.load.audio(levelDef.menaceName, 'assets/' + levelDef.menaceAudioFilename);
+        for (let i = 0; i < this.levelDefs.length; ++i) {
+            const levelDef = this.levelDefs[i];
+            const dim = levelDef.menaceDimensions;
+            this.load.spritesheet(levelDef.menaceName,
+                'assets/' + levelDef.menaceSpritesheet, dim[0], dim[1]);
+            this.load.audio(levelDef.menaceName, 'assets/' + levelDef.menaceAudioFilename);
         }
-        game.load.image('whacker', 'assets/whacker.png');
-        game.load.image('trash',   'assets/trash.png');
+        this.load.image('whacker', 'assets/whacker.png');
+        this.load.image('trash',   'assets/trash.png');
     },
 
     create: function() {
-        var self = this;
+        const self = this;
 
-        game.stage.backgroundColor = '303030';
-        game.physics.startSystem(Phaser.Physics.P2JS);
-        game.physics.p2.restitution = 0.5;
+        this.stage.backgroundColor = '303030';
+        this.physics.startSystem(Phaser.Physics.P2JS);
+        this.physics.p2.restitution = 0.5;
 
-        this.menaces = game.add.group();
+        this.menaces = this.add.group();
         this.createMenaces();
-        this.trash = game.add.sprite(game.world.width - 50, game.world.height - 50, 'trash');
-        this.trash.anchor.setTo(.5);
-        game.physics.p2.enable(this.trash);
+        this.trash = this.add.sprite(this.world.width - 50, this.world.height - 50, 'trash');
+        this.trash.anchor.setTo(0.5);
+        this.physics.p2.enable(this.trash);
         this.trash.body.static = true;
         
         this.trash.body.onBeginContact.add(function(body, shapeA, shapeB, equation) {
             if (body.sprite !== self.whacker) {
                 body.sprite.kill();
-                document.getElementById('score').innerHTML = ++self.score;
+                document.getElementById('score').textContent = ++self.score;
                 self.menaceSound.fadeTo(10, self.menaces.total / self.maxMenaces);
                 if (self.menaces.total === 0 && self.level < self.levelDefs.length) {
                     self.level++;
@@ -65,42 +63,42 @@ Game.prototype = {
             }
         });
 
-        this.whacker = game.add.sprite(game.world.width / 2, game.world.height - 250, 'whacker');
-        game.physics.p2.enable(this.whacker);
+        this.whacker = this.add.sprite(this.world.width / 2, this.world.height - 250, 'whacker');
+        this.physics.p2.enable(this.whacker);
         this.whacker.body.mass = this.whackerMass;
 
-        this.cursors = game.input.keyboard.createCursorKeys();
-        this.spinBoostKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.spinBoostKey = this.input.keyboard.addKey(Phaser.Keyboard.P);
         this.spinBoostKey.onDown.add(this.boostSpin, this);
-        this.generateKey = game.input.keyboard.addKey(Phaser.Keyboard.G);
+        this.generateKey = this.input.keyboard.addKey(Phaser.Keyboard.G);
         this.generateKey.onDown.add(this.createMenace, this);
     },
     
     createMenace: function() {
-        var levelDef = this.levelDefs[this.level - 1];
-        var x = game.rnd.integerInRange(20, game.world.width  - 40);
-        var y = game.rnd.integerInRange(20, game.world.height - 40);
-        var menace = this.menaces.create(x, y, levelDef.menaceName);
-        game.physics.p2.enable(menace);
+        const levelDef = this.levelDefs[this.level - 1];
+        const x = this.rnd.integerInRange(20, this.world.width - 40);
+        const y = this.rnd.integerInRange(20, this.world.height - 40);
+        const menace = this.menaces.create(x, y, levelDef.menaceName);
+        this.physics.p2.enable(menace);
         menace.animations.add('operate', levelDef.animationSequence);
         menace.animations.play('operate', 10, true);
     },
 
     createMenaces: function() {
-        var levelDef = this.levelDefs[this.level - 1];
-        this.menaceSound = game.add.audio(levelDef.menaceName);
+        const levelDef = this.levelDefs[this.level - 1];
+        this.menaceSound = this.add.audio(levelDef.menaceName);
         this.menaceSound.loopFull(1);
         this.menaceSound.play();
 
-        for (var n = 0; n < this.maxMenaces; ++n) {
+        for (let n = 0; n < this.maxMenaces; ++n) {
             this.createMenace();
         }
         
-        document.getElementById('level').innerHTML = levelDef.menaceName;
+        document.getElementById('level').textContent = levelDef.menaceName;
     },
     
     update: function() {
-        var moveAmt = 500;
+        const moveAmt = 500;
         this.whacker.body.setZeroVelocity();
 
         if (this.cursors.left.isDown) {
@@ -128,6 +126,4 @@ Game.prototype = {
     }
 };
 
-var game = new Phaser.Game(1000, 750, Phaser.AUTO, '');
-game.state.add('Game', Game);
-game.state.start('Game');
+new Phaser.Game(1000, 750, Phaser.AUTO, '', menaceWhackers);
