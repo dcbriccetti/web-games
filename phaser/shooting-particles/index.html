@@ -53,8 +53,7 @@ function create() {
 }
     
 function createEnemy() {
-    const enemy = enemies.create(game.rnd.integerInRange(0, game.world.width),
-        game.rnd.integerInRange(0, game.world.height), 'Enemy');
+    const enemy = enemies.create(game.world.randomX, game.world.randomY, 'Enemy');
     game.physics.arcade.enable(enemy);
     spawnEnemyAfterTime = game.time.time + 2000;
 }
