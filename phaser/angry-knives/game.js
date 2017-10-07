@@ -37,7 +37,7 @@ new Phaser.Game(700, 500, Phaser.AUTO, '', {
         if (this.running) {
             const elapsedSeconds = Math.floor(this.game.time.totalElapsedSeconds());
             document.getElementById('elapsed').textContent = elapsedSeconds;
-            if (this.running && elapsedSeconds >= 1) {
+            if (this.running && elapsedSeconds >= 10) {
                 this.add.text(20, 20, 'You survived!');
                 this.stop();
             }
