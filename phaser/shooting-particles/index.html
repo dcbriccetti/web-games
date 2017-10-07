@@ -14,7 +14,7 @@ Rotate with the left and right arrows. Hold down shift for faster rotation.</p>
 <script type="text/javascript">
 'use strict';
 
-var game = new Phaser.Game(800, 800, Phaser.AUTO, '', {
+const game = new Phaser.Game(800, 800, Phaser.AUTO, '', {
     preload: preload, create: create, update: update
 });
 
@@ -24,24 +24,23 @@ function preload() {
     game.load.image('Enemy',  'assets/enemy.png');
 }
 
-var player;
-var enemy;
-var cursors;
-var throwKey;
-var shiftKey;
-var running = true;
-var emitter;
-var mayShootAfterTime = 0;
+let player;
+let enemies;
+let cursors;
+let throwKey;
+let shiftKey;
+let emitter;
+let mayShootAfterTime = 0;
+let spawnEnemyAfterTime;
 
 function create() {
+    spawnEnemyAfterTime = game.time.time + 1000;
     game.stage.backgroundColor = 'd0d0d0';
     game.physics.startSystem(Phaser.Physics.Arcade);
 
     player = game.add.sprite(150, game.world.centerY, 'Player');
     player.anchor.setTo(0.5, 0.5);
-    enemy  = game.add.sprite(game.world.width - 150, game.world.centerY, 'Enemy');
     game.physics.arcade.enable(player);
-    game.physics.arcade.enable(enemy);
 
     cursors = game.input.keyboard.createCursorKeys();
     throwKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -49,13 +48,22 @@ function create() {
 
     emitter = game.add.emitter(0, 0, 100);
     emitter.makeParticles('Ball');
+
+    enemies = this.add.group();
+}
+    
+function createEnemy() {
+    const enemy = enemies.create(game.rnd.integerInRange(0, game.world.width),
+        game.rnd.integerInRange(0, game.world.height), 'Enemy');
+    game.physics.arcade.enable(enemy);
+    spawnEnemyAfterTime = game.time.time + 2000;
 }
 
 function throwBall() {
-    var x = Math.cos(player.rotation);
-    var y = Math.sin(player.rotation);
-    var velocity = 400;
-    
+    const x = Math.cos(player.rotation);
+    const y = Math.sin(player.rotation);
+    const velocity = 400;
+
     emitter.x = player.x + x * player.width / 2;
     emitter.y = player.y + y * player.height / 2;
     emitter.setXSpeed(velocity * x, velocity * x);
@@ -64,26 +72,27 @@ function throwBall() {
 }
 
 function update() {
-    if (running) {
-        if (throwKey.isDown && game.time.time > mayShootAfterTime) {
-            mayShootAfterTime = game.time.time + 100;
-            throwBall();
-        }
-        if (cursors.left.isDown) {
-            player.angle -= shiftKey.isDown ? 5 : 1;
-        }
-        if (cursors.right.isDown) {
-            player.angle += shiftKey.isDown ? 5 : 1;
-        }
+    if (throwKey.isDown && game.time.time > mayShootAfterTime) {
+        mayShootAfterTime = game.time.time + 100;
+        throwBall();
     }
-    
-    game.physics.arcade.collide(emitter, enemy, spriteContact, null, this);
+    if (cursors.left.isDown) {
+        player.angle -= shiftKey.isDown ? 5 : 1;
+    }
+    if (cursors.right.isDown) {
+        player.angle += shiftKey.isDown ? 5 : 1;
+    }
+
+    if (game.time.time > spawnEnemyAfterTime) {
+        createEnemy();
+    }
+
+    game.physics.arcade.collide(emitter, enemies, spriteContact, null, this);
 }
 
-function spriteContact(obj1, obj2) {
-    if (obj1 === enemy) {
-        obj1.kill();
-    }
+function spriteContact(particle, enemy) {
+    enemy.kill();
+    spawnEnemyAfterTime = game.time.time + 2000;
 }
 
 </script>
