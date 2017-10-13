@@ -15,16 +15,19 @@ function draw() {
         const changesUntilCenter = int(map(mouseX, 0, width, 1000, 10));
         particles.push(new Particle(angle, changesUntilCenter));
     }
-    const angleChange = int(map(mouseY, 0, width, 1, 10));
+    const angleChange = int(map(mouseY, 0, height, 1, 10));
     angle = (angle + angleChange) % 360;
-    particles.forEach(p => {
+    let deleteIndexes = [];
+    particles.map((p, i) => {
         if (p.pos.mag() > 1) {
             p.draw();
             p.move();
         } else {
-            particles.shift();
+            deleteIndexes.push(i);
         }
     });
+    deleteIndexes.reverse();
+    deleteIndexes.forEach(i => particles.splice(i, 1));
 }
 
 function keyPressed() {
