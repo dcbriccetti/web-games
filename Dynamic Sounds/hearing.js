@@ -1,23 +1,26 @@
-var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-var oscillator = audioCtx.createOscillator();
-var gainNode = audioCtx.createGain();
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const oscillator = audioCtx.createOscillator();
+const gainNode = audioCtx.createGain();
 gainNode.connect(audioCtx.destination);
 oscillator.connect(gainNode);
 
+const pitchChangeInterval = 200;
 oscillator.type = 'sine';
-oscillator.frequency.value = 440; // value in hertz
+oscillator.frequency.value = 3000; // hertz
 oscillator.start();
-var frequencyMultiplier = Math.pow(2, 1 / 24); 
-var freqDisplay = document.getElementById("freq");
+const frequencyMultiplier = Math.pow(2, 1 / 24);
+const freqDisplay = document.getElementById("freq");
+let running = true;
 
 function raisePitch() {
     oscillator.frequency.value *= frequencyMultiplier;
-    freqDisplay.innerHTML = oscillator.frequency.value.toFixed(0);
-    if (oscillator.frequency.value < 20000) {
-        setTimeout(raisePitch, 100);
+    freqDisplay.textContent = oscillator.frequency.value.toFixed(0);
+    if (running && oscillator.frequency.value < 20000) {
+        setTimeout(raisePitch, 200);
     } else {
         oscillator.stop();
-        freqDisplay.innerHTML = '';
     }
 }
-setTimeout(raisePitch, 100);
+
+document.addEventListener('keydown', () => running = false);
+setTimeout(raisePitch, pitchChangeInterval);
