@@ -12,16 +12,19 @@ let running = true;
 
 function setup() {
     noCanvas();
-    speechRec.start(true, false);
 }
 
 function giveIntro() {
+    speech.onEnd = () => {
+        speech.onEnd = () => {};
+        speechRec.start(true, false);
+        promptForWords();
+    };
     speech.speak('I\'d like to collect some words from you. Please say done after providing words of each type.');
-    promptForWords();
 }
 
 function promptForWords() {
-    speech.speak('Please give me several ' + parts[partIndex] + '.');
+    speech.speak(`Please give me several ${parts[partIndex]}.`);
 }
 
 function speakSentence() {
@@ -40,7 +43,6 @@ function parseResult() {
         const input = speechRec.resultString;
         const newWords = input.split(' ');
         newWords.forEach(word => {
-            console.log(word);
             if (word === 'stop') {
                 running = false;
             } else if (word.toLowerCase() === 'done') {
