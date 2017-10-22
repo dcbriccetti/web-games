@@ -1,6 +1,8 @@
-const possibleVoices = 'Alex Alice Anna Carmit Daniel Fiona Fred Karen Kyoko Lekha Maged Mei-Jia Melina Moira Samantha Sin-ji Tessa Thomas Ting-Ting Veena Victoria Yuna'.split(' ');
-const speech = new p5.Speech('', giveIntro);
+const possibleVoices = 'Alex Alice Anna Carmit Daniel Fiona Fred Karen Kyoko Lekha Maged Mei-Jia Melina Moira Samantha Sin-ji Tessa Ting-Ting Veena Victoria Yuna'.split(' ');
 const rec = new webkitSpeechRecognition();
+const speech = window.speechSynthesis;
+let voices;
+const utterance = new SpeechSynthesisUtterance();
 let partIndex = 0;
 const parts = ['adjectives', 'singular nouns', 'indicative verbs', 'adverbs'];
 const adjectives = [];
@@ -12,27 +14,39 @@ let running = true;
 
 function setup() {
     noCanvas();
+    speech.onvoiceschanged = () => {
+        voices = speech.getVoices();
+        giveIntro();
+    }
 }
 
 function giveIntro() {
-    speech.onEnd = () => {
-        speech.onEnd = () => {};
+    utterance.onend = () => {
+        utterance.onend = () => {};
         rec.onend = () => handleEnd();
         rec.continuous = true;
         rec.interimResults = false;
         rec.onresult = parseResult;
         promptForWords();
     };
-    speech.setVoice('Tessa');
-    speech.speak('Hi. Please say done after providing words of each type.');
+    utterance.voice = voice('Tessa');
+    speak('Hi. Please say done after providing words of each type.');
+}
+
+function speak(message) {
+    utterance.text = message;
+    speech.speak(utterance);
+}
+
+function voice(voiceName) {
+    return voices.filter(v => v.name === voiceName )[0];
 }
 
 function promptForWords() {
-    speech.onEnd = () => {
+    utterance.onend = () => {
         rec.start(true, false);
     };
-    console.log('asking for words');
-    speech.speak(`Give me several ${parts[partIndex]}.`);
+    speak(`Give me several ${parts[partIndex]}.`);
 }
 
 function speakSentence() {
@@ -40,14 +54,13 @@ function speakSentence() {
         const voiceName = random(possibleVoices);
         const sentence =
             `The ${random(adjectives)} ${random(nouns)} ${random(verbs)} ${random(adverbs)}`;
-        speech.setVoice(voiceName);
-        speech.speak(sentence);
+        utterance.voice = voice(voiceName);
+        speak(sentence);
         createP(`${voiceName}: “${sentence}”`);
     }
 }
 
 function parseResult(e) {
-    console.log(e);
     if (running && e.returnValue && e.results.length >= 1) {
         const input = e.results[e.results.length-1][0].transcript.trim();
         const newWords = input.split(' ');
@@ -58,10 +71,10 @@ function parseResult(e) {
                     createElement('br');
                 } else {
                     document.getElementById('suggestions').remove();
-                    const message = 'Here comes some nonsense.';
-                    createElement('h2', `${message} When you get bored, just go away, or reload the page.`);
-                    speech.onEnd = () => setTimeout(speakSentence, 1000);
-                    speech.speak(message);
+                    const message = 'Here comes some stupid nonsense.';
+                    createElement('h2', message);
+                    utterance.onend = () => setTimeout(speakSentence, 1000);
+                    speak(message);
                 }
             } else {
                 words[partIndex].push(word);
@@ -72,7 +85,6 @@ function parseResult(e) {
 }
 
 function handleEnd() {
-    console.log('end. calling abort.');
     if (partIndex < parts.length) {
         promptForWords();
     }
