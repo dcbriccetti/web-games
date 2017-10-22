@@ -55,7 +55,7 @@ function speakSentence() {
         utterance.voice = voice(voiceName);
         speak(sentence);
         const p = $('<p>').attr('id', 'nonsense' + nonsenseNumber++);
-        p.append(`${voiceName}: “${sentence}”`);
+        p.append(`${voiceName}: ${sentence}`);
         p.appendTo('#nonsense');
         removeOldNonsense();
     }
