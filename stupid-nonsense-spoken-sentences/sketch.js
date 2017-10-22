@@ -1,6 +1,6 @@
-const possibleVoices = 'Alex Alice Alva Amelie Anna Carmit Damayanti Daniel Diego Ellen Fiona Fred Ioana Joana Jorge Juan Kanya Karen Kyoko Laura Lekha Luca Luciana Maged Mariska Mei-Jia Melina Milena Moira Monica Nora Paulina Samantha Sara Satu Sin-ji Tessa Thomas Ting-Ting Veena Victoria Xander Yelda Yuna Yuri Zosia Zuzana'.split(' ');
+const possibleVoices = 'Alex Alice Anna Carmit Daniel Fiona Fred Karen Kyoko Lekha Maged Mei-Jia Melina Moira Samantha Sin-ji Tessa Thomas Ting-Ting Veena Victoria Yuna'.split(' ');
 const speech = new p5.Speech('', giveIntro);
-const speechRec = new p5.SpeechRec('en-US', parseResult);
+const rec = new webkitSpeechRecognition();
 let partIndex = 0;
 const parts = ['adjectives', 'singular nouns', 'indicative verbs', 'adverbs'];
 const adjectives = [];
@@ -17,14 +17,22 @@ function setup() {
 function giveIntro() {
     speech.onEnd = () => {
         speech.onEnd = () => {};
-        speechRec.start(true, false);
+        rec.onend = () => handleEnd();
+        rec.continuous = true;
+        rec.interimResults = false;
+        rec.onresult = parseResult;
         promptForWords();
     };
-    speech.speak('I\'d like to collect some words from you. Please say done after providing words of each type.');
+    speech.setVoice('Tessa');
+    speech.speak('Hi. Please say done after providing words of each type.');
 }
 
 function promptForWords() {
-    speech.speak(`Please give me several ${parts[partIndex]}.`);
+    speech.onEnd = () => {
+        rec.start(true, false);
+    };
+    console.log('asking for words');
+    speech.speak(`Give me several ${parts[partIndex]}.`);
 }
 
 function speakSentence() {
@@ -38,17 +46,16 @@ function speakSentence() {
     }
 }
 
-function parseResult() {
-    if (speechRec.resultValue && running) {
-        const input = speechRec.resultString;
+function parseResult(e) {
+    console.log(e);
+    if (running && e.returnValue && e.results.length >= 1) {
+        const input = e.results[e.results.length-1][0].transcript.trim();
         const newWords = input.split(' ');
         newWords.forEach(word => {
-            if (word === 'stop') {
-                running = false;
-            } else if (word.toLowerCase() === 'done') {
+            if (word.toLowerCase() === 'done') {
+                rec.abort();
                 if (++partIndex < parts.length) {
                     createElement('br');
-                    promptForWords();
                 } else {
                     document.getElementById('suggestions').remove();
                     const message = 'Here comes some nonsense.';
@@ -64,3 +71,9 @@ function parseResult() {
     }
 }
 
+function handleEnd() {
+    console.log('end. calling abort.');
+    if (partIndex < parts.length) {
+        promptForWords();
+    }
+}
