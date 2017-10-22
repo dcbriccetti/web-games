@@ -7,12 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Stupid Nonsense Spoken Sentences</title>
-    <script src="libraries/p5.js"></script>
-    <script src="libraries/p5.dom.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
     <script src="sketch.js"></script>
     <style>
         body {
             font-family: sans-serif;
+        }
+        #nonsense-heading {
+            display: none;
         }
     </style>
 </head>
@@ -32,6 +36,21 @@
     energetically, tentatively, triumphantly, carefully
 </div>
 <h2>Your Words</h2>
+<dl>
+    <dt>Adjectives</dt>
+    <dd id="adjectives"></dd>
+    <dt>Nouns</dt>
+    <dd id="singular-nouns"></dd>
+    <dt>Verbs</dt>
+    <dd id="indicative-verbs"></dd>
+    <dt>Adverbs</dt>
+    <dd id="adverbs"></dd>
+</dl>
+
+<h2 id="nonsense-heading">Here Comes Some Stupid Nonsense</h2>
+<div id="nonsense">
+</div>
+
 </body>
 
 </html>

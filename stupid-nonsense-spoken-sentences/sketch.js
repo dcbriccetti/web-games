@@ -11,14 +11,12 @@ const verbs = [];
 const adverbs = [];
 const words = [adjectives, nouns, verbs, adverbs];
 let running = true;
+let nonsenseNumber = 0;
 
-function setup() {
-    noCanvas();
-    speech.onvoiceschanged = () => {
-        voices = speech.getVoices();
-        giveIntro();
-    }
-}
+speech.onvoiceschanged = () => {
+    voices = speech.getVoices();
+    giveIntro();
+};
 
 function giveIntro() {
     utterance.onend = () => {
@@ -29,7 +27,7 @@ function giveIntro() {
         rec.onresult = parseResult;
         promptForWords();
     };
-    utterance.voice = voice('Tessa');
+    utterance.voice = voice('Daniel');
     speak('Hi. Please say done after providing words of each type.');
 }
 
@@ -39,53 +37,75 @@ function speak(message) {
 }
 
 function voice(voiceName) {
-    return voices.filter(v => v.name === voiceName )[0];
+    return voices.filter(v => v.name === voiceName)[0];
 }
 
 function promptForWords() {
     utterance.onend = () => {
         rec.start(true, false);
     };
-    speak(`Give me several ${parts[partIndex]}.`);
+    speak(`Please give me several ${parts[partIndex]}.`);
 }
 
 function speakSentence() {
     if (running) {
-        const voiceName = random(possibleVoices);
-        const sentence =
-            `The ${random(adjectives)} ${random(nouns)} ${random(verbs)} ${random(adverbs)}`;
+        const voiceName = randChoice(possibleVoices);
+        let sentence = 'The';
+        words.forEach(wordType => sentence += ' ' + randChoice(wordType));
         utterance.voice = voice(voiceName);
         speak(sentence);
-        createP(`${voiceName}: “${sentence}”`);
+        const p = $('<p>').attr('id', 'nonsense' + nonsenseNumber++);
+        p.append(`${voiceName}: “${sentence}”`);
+        p.appendTo('#nonsense');
+        removeOldNonsense();
+    }
+}
+
+function removeOldNonsense() {
+    const expiredNum = nonsenseNumber - 6;
+    if (expiredNum >= 0) {
+        const toRemove = $('#nonsense' + expiredNum);
+        toRemove.fadeOut(3000, () => toRemove.remove());
     }
 }
 
 function parseResult(e) {
     if (running && e.returnValue && e.results.length >= 1) {
-        const input = e.results[e.results.length-1][0].transcript.trim();
+        const input = e.results[e.results.length - 1][0].transcript.trim();
         const newWords = input.split(' ');
         newWords.forEach(word => {
             if (word.toLowerCase() === 'done') {
                 rec.abort();
-                if (++partIndex < parts.length) {
-                    createElement('br');
-                } else {
-                    document.getElementById('suggestions').remove();
-                    const message = 'Here comes some stupid nonsense.';
-                    createElement('h2', message);
-                    utterance.onend = () => setTimeout(speakSentence, 1000);
-                    speak(message);
+                if (++partIndex >= parts.length) {
+                    prepareNonsense();
                 }
             } else {
-                words[partIndex].push(word);
-                createSpan(word + ' ');
+                collectWord(word);
             }
         });
     }
+}
+
+function collectWord(word) {
+    words[partIndex].push(word);
+    const dt = $('#' + parts[partIndex].replace(' ', '-'));
+    dt.append(word + ' ');
+}
+
+function prepareNonsense() {
+    $('#suggestions').remove();
+    const nh = $('#nonsense-heading');
+    nh.show();
+    utterance.onend = () => setTimeout(speakSentence, 1000);
+    speak(nh.text());
 }
 
 function handleEnd() {
     if (partIndex < parts.length) {
         promptForWords();
     }
+}
+
+function randChoice(sequence) {
+    return sequence[Math.floor(Math.random() * sequence.length)];
 }
