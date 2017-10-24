@@ -10,11 +10,7 @@ class StupidNonsenseSpokenSentences {
 
         this.partIndex = 0;
         this.parts = ['adjectives', 'singular nouns', 'indicative verbs', 'adverbs'];
-        this.adjectives = [];
-        this.nouns = [];
-        this.verbs = [];
-        this.adverbs = [];
-        this.words = [this.adjectives, this.nouns, this.verbs, this.adverbs];
+        this.words = [[], [], [], []];
 
         this.nonsenseNumber = 0;
 
