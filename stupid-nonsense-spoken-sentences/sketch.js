@@ -25,7 +25,7 @@ class StupidNonsenseSpokenSentences {
         const rec = new webkitSpeechRecognition();
         rec.onend = () => self.handleEnd();
         rec.continuous = true;
-        rec.interimResults = false;
+        rec.interimResults = true;
         rec.onresult = (event) => self.parseResult(event);
         return rec;
     }
@@ -68,28 +68,35 @@ class StupidNonsenseSpokenSentences {
         }
     }
 
-    parseResult(e) {
-        if (e.returnValue && e.results.length >= 1) {
-            const input = e.results[e.results.length - 1][0].transcript.trim();
-            const newWords = input.split(' ');
-            newWords.forEach(word => {
+    parseResult(event) {
+        if (!(event.returnValue && event.results.length >= 1)) {
+            return;
+        }
+
+        const latestResult = event.results[event.results.length - 1];
+        if (latestResult.isFinal) {
+            const alternative = latestResult[0];
+            if (alternative.confidence > 0.7) {
+                const word = alternative.transcript.trim();
                 if (word.toLowerCase() === 'done') {
                     this.rec.abort();
                     if (++this.partIndex >= this.parts.length) {
                         this.prepareNonsense();
                     }
                 } else {
-                    this.collectWord(word);
+                    this.collectWord(word, alternative.confidence);
                 }
-            });
+            }
         }
     }
 
-    collectWord(word) {
+    collectWord(word, confidence) {
         const pidx = this.partIndex;
         this.words[pidx].push(word);
         const dt = $('#' + this.parts[pidx].replace(' ', '-'));
-        dt.append(word + ' ');
+        const color = `rgb(0%, ${100 - confidence * 50}%, 0%)`;
+        const n = new Intl.NumberFormat().format(confidence);
+        dt.append(`<span style="color: ${color}">${word}/${n} </span>`);
     }
 
     prepareNonsense() {
