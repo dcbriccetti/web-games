@@ -1,3 +1,7 @@
+// Cube to sphere program. Inspired by Golan Levin’s circle morphing:
+// https://github.com/golanlevin/circle-morphing, brought to us by
+// Dan Shiffman’s The Coding Train.
+
 function setup() {
     createCanvas(document.body.clientWidth, window.innerHeight, WEBGL);
 }
