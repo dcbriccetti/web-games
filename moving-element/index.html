@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Title</title>
+    <style>
+        #graphic {
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <img id='graphic' src="graphic.png">
+    <script>
+        let x = 0;
+        let y = 0;
+        const graphic = document.getElementById('graphic');
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight') {
+                x += 10;
+                graphic.style.left = x + 'px';
+            }
+        })
+    </script>
+</body>
+</html>
