@@ -13,13 +13,40 @@
     <script>
         let x = 0;
         let y = 0;
+        let rightPressed = false;
+        let downPressed = false;
         const graphic = document.getElementById('graphic');
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight') {
-                x += 10;
+                rightPressed = true;
+            }
+            if (event.key === 'ArrowDown') {
+                downPressed = true;
+            }
+        });
+        document.addEventListener('keyup', (event) => {
+            if (event.key === 'ArrowRight') {
+                rightPressed = false;
+            }
+            if (event.key === 'ArrowDown') {
+                downPressed = false;
+            }
+        });
+
+        function update() {
+            if (rightPressed) {
+                x += 2;
                 graphic.style.left = x + 'px';
             }
-        })
+            if (downPressed) {
+                y += 2;
+                graphic.style.top = y + 'px';
+            }
+            window.requestAnimationFrame(update);
+        }
+
+        window.requestAnimationFrame(update);
+
     </script>
 </body>
 </html>
