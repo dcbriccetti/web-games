@@ -4,7 +4,7 @@
     <title>Title</title>
     <style>
         #graphic {
-            position: absolute;
+            position: relative;
         }
     </style>
 </head>
@@ -15,18 +15,15 @@
         let x = 0;
         let y = 0;
         const graphic = document.getElementById('graphic');
-        document.addEventListener('keydown', (event) => downKeys.add(event.key));
-        document.addEventListener('keyup',   (event) => downKeys.delete(event.key));
+        document.addEventListener('keydown', event => downKeys.add(event.key));
+        document.addEventListener('keyup',   event => downKeys.delete(event.key));
 
         function update() {
-            if (downKeys.has('ArrowRight')) {
-                x += 2;
-                graphic.style.left = x + 'px';
-            }
-            if (downKeys.has('ArrowDown')) {
-                y += 2;
-                graphic.style.top = y + 'px';
-            }
+            const s = graphic.style;
+            if (downKeys.has('ArrowRight')) s.left = ++x + 'px';
+            if (downKeys.has('ArrowDown' )) s.top  = ++y + 'px';
+            if (downKeys.has('ArrowLeft'))  s.left = --x + 'px';
+            if (downKeys.has('ArrowUp' ))   s.top  = --y + 'px';
             window.requestAnimationFrame(update);
         }
 
