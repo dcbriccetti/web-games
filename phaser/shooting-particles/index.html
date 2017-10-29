@@ -14,9 +14,7 @@ Rotate with the left and right arrows. Hold down shift for faster rotation.</p>
 <script type="text/javascript">
 'use strict';
 
-const game = new Phaser.Game(800, 800, Phaser.AUTO, '', {
-    preload: preload, create: create, update: update
-});
+const game = new Phaser.Game(800, 800, Phaser.AUTO, '', {preload, create, update});
 
 function preload() {
     game.load.image('Player', 'assets/player.png');
