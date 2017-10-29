@@ -9,17 +9,20 @@
     </style>
 </head>
 <body>
-<p>Move with arrow keys. Hold down shift to move faster.</p>
+    <p>Move with arrow keys. Hold down shift to move faster.</p>
+    <p>Keys down: <span id="downKeys"></span></p>
     <img id='graphic' src="graphic.png">
     <script>
         const downKeys = new Set();
         let x = 0;
         let y = 0;
         const graphic = document.getElementById('graphic');
+        const downKeysSpan = document.getElementById('downKeys');
         document.addEventListener('keydown', event => downKeys.add   (event.key));
         document.addEventListener('keyup',   event => downKeys.delete(event.key));
 
         function update() {
+            downKeysSpan.textContent = Array.from(downKeys);
             const s = graphic.style;
             function isDown(key) {return downKeys.has(key);}
             const d = isDown('Shift') ? 10 : 2;
