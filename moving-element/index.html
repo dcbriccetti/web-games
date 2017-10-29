@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Title</title>
+    <title>Moving Image Example</title>
     <style>
         #graphic {
             position: relative;
@@ -9,21 +9,24 @@
     </style>
 </head>
 <body>
+<p>Move with arrow keys. Hold down shift to move faster.</p>
     <img id='graphic' src="graphic.png">
     <script>
         const downKeys = new Set();
         let x = 0;
         let y = 0;
         const graphic = document.getElementById('graphic');
-        document.addEventListener('keydown', event => downKeys.add(event.key));
+        document.addEventListener('keydown', event => downKeys.add   (event.key));
         document.addEventListener('keyup',   event => downKeys.delete(event.key));
 
         function update() {
             const s = graphic.style;
-            if (downKeys.has('ArrowRight')) s.left = ++x + 'px';
-            if (downKeys.has('ArrowDown' )) s.top  = ++y + 'px';
-            if (downKeys.has('ArrowLeft'))  s.left = --x + 'px';
-            if (downKeys.has('ArrowUp' ))   s.top  = --y + 'px';
+            function isDown(key) {return downKeys.has(key);}
+            const d = isDown('Shift') ? 10 : 2;
+            if (isDown('ArrowRight')) s.left = (x += d) + 'px';
+            if (isDown('ArrowDown' )) s.top  = (y += d) + 'px';
+            if (isDown('ArrowLeft' )) s.left = (x -= d) + 'px';
+            if (isDown('ArrowUp'   )) s.top  = (y -= d) + 'px';
             window.requestAnimationFrame(update);
         }
 
