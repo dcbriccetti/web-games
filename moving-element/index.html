@@ -11,34 +11,19 @@
 <body>
     <img id='graphic' src="graphic.png">
     <script>
+        const downKeys = new Set();
         let x = 0;
         let y = 0;
-        let rightPressed = false;
-        let downPressed = false;
         const graphic = document.getElementById('graphic');
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowRight') {
-                rightPressed = true;
-            }
-            if (event.key === 'ArrowDown') {
-                downPressed = true;
-            }
-        });
-        document.addEventListener('keyup', (event) => {
-            if (event.key === 'ArrowRight') {
-                rightPressed = false;
-            }
-            if (event.key === 'ArrowDown') {
-                downPressed = false;
-            }
-        });
+        document.addEventListener('keydown', (event) => downKeys.add(event.key));
+        document.addEventListener('keyup',   (event) => downKeys.delete(event.key));
 
         function update() {
-            if (rightPressed) {
+            if (downKeys.has('ArrowRight')) {
                 x += 2;
                 graphic.style.left = x + 'px';
             }
-            if (downPressed) {
+            if (downKeys.has('ArrowDown')) {
                 y += 2;
                 graphic.style.top = y + 'px';
             }
