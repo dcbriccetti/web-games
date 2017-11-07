@@ -10,6 +10,8 @@ function setup() {
     c.width = window.innerWidth;
     c.height = window.innerHeight;
     const ctx = c.getContext('2d');
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, c.width, c.height);
     addEventListener('keydown', keyDown);
     c.addEventListener('mousemove', event => {
         ctx.save();
