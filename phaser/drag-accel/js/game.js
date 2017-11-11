@@ -19,9 +19,9 @@ const dragAccel = {
         ship.body.drag.set(100);
         this.ship = ship;
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+        this.dKey = this.input.keyboard.addKey(Phaser.Keyboard.D);
         this.dKey.onDown.add(this.handleDButton, this);
-        this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        this.spaceKey = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         this.spaceKey.onDown.add(this.handleSpaceButton, this);
     },
 
@@ -51,7 +51,7 @@ const dragAccel = {
         const velY = Math.round(body.velocity.y);
         const posX = Math.round(body.position.x);
         const posY = Math.round(body.position.y);
-        game.debug.text('Position: (' + posX + ', ' + posY + '), ' +
+        this.game.debug.text('Position: (' + posX + ', ' + posY + '), ' +
             'velocity: (' + velX + ', ' + velY + '), ' +
             'acceleration: (' + accel.x + ", " + accel.y + '); drag: ' + body.drag.x,
             10, this.world.height - 10);
@@ -69,9 +69,7 @@ const dragAccel = {
     createOscillator: function () {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        gainNode.connect(audioCtx.destination);
-        oscillator.connect(gainNode);
+        oscillator.connect(audioCtx.destination);
         oscillator.type = 'sine';
         oscillator.frequency.value = 65;
         oscillator.start();
