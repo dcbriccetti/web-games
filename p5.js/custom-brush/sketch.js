@@ -14,6 +14,9 @@ function draw() {
     if (mouseIsPressed) {
         background(0);
     }
+}
+
+function mouseMoved() {
     noStroke();
     const hue = autoHue ? frameCount % 360 : manualHue;
     fill(hue, 100, 100);
@@ -22,7 +25,9 @@ function draw() {
     const brushWidth = 100;
     const bristleSeparation = 3;
     for (let xo = -brushWidth / 2; xo <= brushWidth / 2; xo += bristleSeparation) {
-        ellipse(xo, 0, 2, 2);
+        for (let yo = -brushWidth / 2; yo <= brushWidth / 2; yo += bristleSeparation) {
+            rect(xo, yo, 2, 2);
+        }
     }
 }
 
