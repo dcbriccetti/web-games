@@ -1,6 +1,5 @@
 const brushWidth = 100;
 const bristleSeparation = 3;
-let preRender = true;
 let autoRotate = false;
 let rotationAngle = 0;
 let autoHue = true;
