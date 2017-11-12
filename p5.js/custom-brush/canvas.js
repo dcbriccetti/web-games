@@ -16,7 +16,7 @@ function setup() {
     const ctx = c.getContext('2d');
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, c.width, c.height);
-    if (preRender) brushes = Array(360).fill().map((_, i) => createBrushCanvasForHue(i));
+    if (preRender) brushes = new Array(360).fill().map((_, i) => createBrushCanvasForHue(i));
 
     addEventListener('keydown', keyDown);
     c.addEventListener('mousemove', event => {
