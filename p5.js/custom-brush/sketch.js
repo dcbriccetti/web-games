@@ -2,6 +2,8 @@ let autoRotate = false;
 let manualRotationAngle = 0;
 let autoHue = true;
 let manualHue = 0;
+let strokes = 0;
+let strokeTime = 0;
 
 function setup() {
     createCanvas(innerWidth, innerHeight);
@@ -24,10 +26,15 @@ function mouseMoved() {
     rotate(autoRotate ? frameCount : manualRotationAngle);
     const brushWidth = 100;
     const bristleSeparation = 3;
+    const drawStartTime = performance.now();
     for (let xo = -brushWidth / 2; xo <= brushWidth / 2; xo += bristleSeparation) {
         for (let yo = -brushWidth / 2; yo <= brushWidth / 2; yo += bristleSeparation) {
             rect(xo, yo, 2, 2);
         }
+    }
+    strokeTime += performance.now() - drawStartTime;
+    if (++strokes % 100 === 0) {
+        console.log(`Average time of ${strokes} brush strokes: ${(strokeTime / strokes).toFixed(5)} ms`);
     }
 }
 
