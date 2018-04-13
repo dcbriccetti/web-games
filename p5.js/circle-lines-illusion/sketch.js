@@ -19,8 +19,8 @@ function draw() {
     strokeWeight(3);
     noFill();
 
-    function drawCircleLeftOrRight(dir) {
-        ellipse(x + RADIUS * dir, y, DIAMETER);
+    function drawCircleLeftOrRight(direction) {
+        ellipse(x + RADIUS * direction, y, DIAMETER);
     }
 
     function drawLine() {
