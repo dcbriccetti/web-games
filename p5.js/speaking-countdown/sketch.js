@@ -1,12 +1,17 @@
-let num = 2;
+let countdownSecs = 3;
 let rocketY = 100;
 let rocketDy = 1;
 let launched = false;
 const speech = window.speechSynthesis;
 const utterance = new SpeechSynthesisUtterance();
+const osc = new p5.Oscillator();
+let freq = 100;
 
 function setup() {
     createCanvas(windowWidth, windowHeight, WEBGL);
+    osc.setType('sine');
+    osc.amp(0);
+    osc.start();
     frameRate(1);
 }
 
@@ -19,22 +24,27 @@ function draw() {
     cylinder(20, 100);
     pop();
 
-    if (num >= 0) {
-      say(num--, 0.5);
+    if (countdownSecs >= 0) {
+      say(countdownSecs--);
     } else {
         if (! launched) {
             frameRate(60);
-            say("Oh wow, look at it go!", 2, 0.5);
+            say("There she goes!");
             launched = true;
         }
+        osc.amp(map(rocketY, 0, height * 2, 0.2, 0));
+        osc.freq(30 + rocketY);
         rocketY += rocketDy;
-        rocketDy *= 1.01;
+        rocketDy += 0.04;
+
+        if (rocketY > height * 2) {
+            osc.stop();
+            noLoop();
+        }
     }
 }
 
-function say(message, pitch = 1, rate = 1) {
+function say(message) {
       utterance.text = message;
-      utterance.pitch = pitch;
-      utterance.rate = rate;
       speech.speak(utterance);
 }
