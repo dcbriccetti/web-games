@@ -33,14 +33,12 @@ async function draw() {
                 ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
                 ctx.fillRect(xOffset * cellLen, yOffset * cellLen,
                     squareSize * cellLen, squareSize * cellLen);
-                ++thisSizeSquares;
-                ++totalSquares;
-                $('#total').text(totalSquares.toString());
-                $(`#size${squareSize}Total`).text(thisSizeSquares.toString());
+                $('#total').text((++totalSquares).toString());
+                $(`#size${squareSize}Total`).text((++thisSizeSquares).toString());
                 await sleep(sleepMs);
             }
         }
-        await sleep(250);
+        await sleep(200);
     }
     drawBoard();
 }
