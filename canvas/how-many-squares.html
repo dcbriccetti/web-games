@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>How Many Squares on an 8×8 Board?</title>
+    <script type="text/javascript">
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function draw() {
+            const canvas = document.getElementById('tutorial');
+            const cellLen = canvas.width / 8;
+            const ctx = canvas.getContext('2d');
+            ctx.font = '150px serif';
+            let numSquares = 0;
+
+            function drawBoard() {
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.width);
+                ctx.strokeStyle = 'gray';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < canvas.width; x += cellLen)
+                    for (let y = 0; y < canvas.width; y += cellLen)
+                        ctx.strokeRect(x, y, cellLen, cellLen);
+            }
+
+            for (let squareSize = 1; squareSize <= 8; ++squareSize) {
+                const hue = 360 / 8 * (squareSize - 1);
+                for (let xOffset = 0; xOffset <= 8 - squareSize; ++xOffset) {
+                    for (let yOffset = 0; yOffset <= 8 - squareSize; ++yOffset) {
+                        drawBoard();
+                        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+                        ctx.lineWidth = 10;
+                        ctx.strokeRect(xOffset * cellLen, yOffset * cellLen,
+                            squareSize * cellLen, squareSize * cellLen);
+                        ++numSquares;
+                        ctx.fillStyle = 'black';
+                        ctx.fillText(numSquares, 50, 150);
+                        await sleep(30 * squareSize);
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/css">
+        canvas {
+            border: 5px solid black;
+        }
+    </style>
+</head>
+<body onload="draw();">
+<canvas id="tutorial" width="600" height="600"></canvas>
+</body>
+</html>
