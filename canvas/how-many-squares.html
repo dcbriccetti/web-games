@@ -9,25 +9,27 @@
 
         async function draw() {
             const canvas = document.getElementById('tutorial');
-            const cellLen = canvas.width / 8;
+            const boardLen = canvas.width;
+            const cellLen = boardLen / 8;
             const ctx = canvas.getContext('2d');
             ctx.font = '150px serif';
+
             let numSquares = 0;
 
             function drawBoard() {
                 ctx.fillStyle = 'white';
-                ctx.fillRect(0, 0, canvas.width, canvas.width);
+                ctx.fillRect(0, 0, boardLen, boardLen);
                 ctx.strokeStyle = 'gray';
                 ctx.lineWidth = 1;
-                for (let x = 0; x < canvas.width; x += cellLen)
-                    for (let y = 0; y < canvas.width; y += cellLen)
+                for (let x = 0; x < boardLen; x += cellLen)
+                    for (let y = 0; y < boardLen; y += cellLen)
                         ctx.strokeRect(x, y, cellLen, cellLen);
             }
 
             for (let squareSize = 1; squareSize <= 8; ++squareSize) {
                 const hue = 360 / 8 * (squareSize - 1);
-                for (let xOffset = 0; xOffset <= 8 - squareSize; ++xOffset) {
-                    for (let yOffset = 0; yOffset <= 8 - squareSize; ++yOffset) {
+                for (let yOffset = 0; yOffset <= 8 - squareSize; ++yOffset) {
+                    for (let xOffset = 0; xOffset <= 8 - squareSize; ++xOffset) {
                         drawBoard();
                         ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
                         ctx.lineWidth = 10;
@@ -49,6 +51,6 @@
     </style>
 </head>
 <body onload="draw();">
-<canvas id="tutorial" width="600" height="600"></canvas>
+<canvas id="tutorial" width="800" height="800"></canvas>
 </body>
 </html>
