@@ -57,7 +57,7 @@ function mouseRatio(mouse, half) {
 /**
  * Updates the mouse position display on the web page, and allows the joystick to be moved only after the mouse
  * is moved to the center of the joystick (this prevents the stick from jumping to an extreme position
- * when the mouse pointer move is from an edge).
+ * when the mouse pointer moves in from an edge).
  */
 function mouseMoved() {
     const x = mouseXRatio();
