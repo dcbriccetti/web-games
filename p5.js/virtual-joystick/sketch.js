@@ -1,37 +1,76 @@
+// Virtual Joystick
+
+/** Whether mouse movements move the joystick */
 let movable = false;
+/** The maximum stick deflection angle, in radians */
+const MAX_DEFLECT = Math.PI / 8;
 
+/** p5.js */
 function setup() {
-    const c = createCanvas(400, 400, WEBGL);
-    c.parent('#main');
+    createCanvas(400, 400, WEBGL).parent('#canvas');
 }
 
-function getDisplacement(halfDistance, mouse) {
-    return constrain(halfDistance - mouse, -halfDistance, halfDistance);
-}
-
+/** p5.js */
 function draw() {
-    background(0);
+    background(6, 0, 163);
     const stickLen = width * 0.45;
-    const halfHeight = height / 2;
-    const halfWidth = width / 2;
-    const mouseDisplacementX = getDisplacement(halfWidth, mouseX);
-    const mouseDisplacementY = getDisplacement(halfHeight, mouseY);
 
-    ambientLight(100);
-    directionalLight(255, 255, 255, -width / 4, -height / 4, 0);
-    ambientMaterial(255, 0, 0);
+    ambientLight(128);
+    directionalLight(255, 255, 255, 0, 0, -1);  // A white light from behind the viewer
+    ambientMaterial(192);
 
-    rotateX(PI * 1.5);
+    sphere(70);
+
+    rotateX(-PI / 2);
     if (movable) {
-        rotateX(map(mouseDisplacementY, 0, halfHeight, 0, PI / 8));
-        rotateZ(map(mouseDisplacementX, -halfWidth, halfWidth, PI / 8, -PI / 8));
+        rotateX(map(mouseYRatio(), -1, 1, -MAX_DEFLECT, MAX_DEFLECT));
+        rotateZ(map(mouseXRatio(), -1, 1, -MAX_DEFLECT, MAX_DEFLECT));
     }
     translate(0, -stickLen / 2, 0);
     noStroke();
-    cylinder(stickLen / 6, stickLen);
+    cylinder(stickLen / 5, stickLen);
 }
 
+/** Returns the mouse x position as a number between -1 and 1 */
+function mouseXRatio() {
+    return mouseRatio(mouseX, width / 2);
+}
+
+/** Returns the mouse y position as a number between -1 and 1 */
+function mouseYRatio() {
+    return -mouseRatio(mouseY, height / 2);
+}
+
+/**
+ * Takes the mouse value in pixels, translates it to the center, constrains it to within the canvas dimensions, and
+ * returns the position as a number between -1 and 1.
+ *
+ * @param mouse either mouseX or mouseY
+ * @param half half of either the width or height
+ * @returns the position as a number between -1 and 1
+ */
+function mouseRatio(mouse, half) {
+    const mouseFromCenter = mouse - half;
+    return constrain(mouseFromCenter, -half, half) / half;
+}
+
+/**
+ * Updates the mouse position display on the web page, and allows the joystick to be moved only after the mouse
+ * is moved to the center of the joystick (this prevents the stick from jumping to an extreme position
+ * when the mouse pointer move is from an edge).
+ */
 function mouseMoved() {
-    if (!movable && dist(mouseX, mouseY, width / 2, height / 2) < width / 4)
+    const x = mouseXRatio();
+    const y = mouseYRatio();
+    const activationZone = 0.2;
+
+    if (!movable && dist(x, y, 0, 0) < activationZone) {
         movable = true;
+        select('#xy').removeClass('invisible');
+    }
+
+    if (movable) {
+        select('#x').html(x.toFixed(3));
+        select('#y').html(y.toFixed(3));
+    }
 }

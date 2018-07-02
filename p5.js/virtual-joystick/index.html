@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
           integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/addons/p5.sound.min.js"></script>
     <script src="sketch.js"></script>
     <style type="text/css">
         body {
@@ -15,8 +17,13 @@
     </style>
 </head>
 <body>
-<div class="container" id="main">
-<h1>Virtual Joystick</h1>
+<div class="container">
+    <h1>Virtual Joystick</h1>
+    <div id="canvas"></div>
+    <div id="xy" class="row invisible">
+        <div class="col-2">X: <span id="x">0</span></div>
+        <div class="col-2">Y: <span id="y">0</span></div>
+    </div>
 </div>
 </body>
 </html>
