@@ -22,7 +22,7 @@
         document.addEventListener('keyup',   event => downKeys.delete(event.key));
 
         function update() {
-            downKeysSpan.textContent = Array.from(downKeys);
+            downKeysSpan.textContent = downKeys;
             const s = graphic.style;
             function isDown(key) {return downKeys.has(key);}
             const d = isDown('Shift') ? 10 : 2;
