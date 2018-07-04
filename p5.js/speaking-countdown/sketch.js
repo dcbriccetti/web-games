@@ -4,7 +4,7 @@ import SoundMaker from "./soundmaker.js";
 new p5(p => {
     const rocket = new Rocket(200);
     const soundMaker = new SoundMaker();
-    let countdownSecs = 1;
+    let countdownSecs = 3;
 
     p.setup = function () {
         p.createCanvas(800, p.windowHeight, p.WEBGL).parent('#main');
