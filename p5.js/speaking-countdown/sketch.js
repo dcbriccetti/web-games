@@ -15,8 +15,8 @@ new p5(p => {
         function drawBackground() {
             const left = -p.width / 2;
             const top = -p.height / 2;
-            const skyProportion = 0.75;
-            const skyHeight = p.height * skyProportion;
+            const skyToHeightRatio = 0.75;
+            const skyHeight = p.height * skyToHeightRatio;
 
             function drawSky() {
                 p.push();
