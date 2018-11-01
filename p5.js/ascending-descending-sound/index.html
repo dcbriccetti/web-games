@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ascending and Descending Sounds</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.sound.min.js"></script>
+    <script>
+        const descendingOsc = new p5.Oscillator("sine");
+        const ascendingOsc = new p5.Oscillator("sine");
+
+        function setup() {
+            const c = createCanvas(500, 600);
+            c.parent('#main');
+            descendingOsc.start(0.01);
+            ascendingOsc.start(0.01);
+            descendingOsc.pan(1);
+            ascendingOsc.pan(-1);
+        }
+
+        function draw() {
+            const duration = 250;
+            if (frameCount === duration * 1.2) {
+                noLoop();
+                descendingOsc.amp(0, 0.1);
+                ascendingOsc.amp(0, 0.1);
+                descendingOsc.stop(1);
+                ascendingOsc.stop(1);
+            }
+            const linearDoneness = min(duration, frameCount);
+            const doneness = quadEasingOut(linearDoneness, duration);
+            const target = 220;
+            const lowStart = target / 2;
+            const highStart = target * 2;
+            const descendingFreq = target * pow(2, 1 - doneness);
+            const ascendingFreq = lowStart * pow(2, doneness);
+            descendingOsc.freq(descendingFreq);
+            ascendingOsc.freq(ascendingFreq - 3); // Lower slightly so we hear beats at the end
+            const range = highStart - lowStart;
+            const descendingRange = highStart - target;
+            const meetingY = (descendingRange / range) * height;
+            strokeWeight(2);
+            const sameFreq = descendingFreq - ascendingFreq < 1;
+            stroke(sameFreq ? 'purple' : 'red');
+            point(frameCount, map(descendingFreq, highStart, target, 0, meetingY));
+            console.log(`${linearDoneness / duration}\t${doneness}\t${ascendingFreq}\t${descendingFreq}`);
+            if (! sameFreq) {
+                stroke('blue');
+                point(frameCount, map(ascendingFreq, lowStart, target, height, meetingY));
+            }
+        }
+
+        function quadEasingOut(currentFrame, duration) {
+            const x = currentFrame / duration;
+            return -x * (x - 2);
+        }
+    </script>
+    <style type="text/css">
+        body {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="main">
+    <h1>Ascending and Descending Sounds</h1>
+</div>
+</body>
+</html>
