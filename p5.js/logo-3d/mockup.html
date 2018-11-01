@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Logo Experiment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.sound.min.js"></script>
+    <script>
+
+        function setup() {
+            const c = createCanvas(1000, 1000, WEBGL);
+            c.parent('#main');
+            angleMode(DEGREES);
+        }
+
+        function draw() {
+            background('white');
+            rotateX(map(sin(frameCount), -1, 1, 0, 90));
+            noFill();
+            stroke('orange');
+            box(width * 0.5);
+            noStroke();
+            fill('blue');
+            const len = 400;
+
+            translate(0, 0, -300);
+            translate(len / 2, 0);
+            for (let n = 0; n < map(frameCount % 150, 0, 149, 0, 12); ++n) {
+                rotateZ(90);
+                translate(len / 2, len / 2);
+                push();
+                rotateX(7);
+                box(10, len, 10);
+                pop();
+                translate(0, 0, len / 8);
+            }
+        }
+    </script>
+    <style type="text/css">
+        body {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="main">
+    <h1>3D Logo Experiment</h1>
+</div>
+</body>
+</html>

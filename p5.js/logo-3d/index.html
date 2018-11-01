@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Logo Experiment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.sound.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <script src="turtle.js"></script>
+    <script src="sketch.js"></script>
+    <style type="text/css">
+        body {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>3D Logo Experiment</h1>
+    <div class="row">
+        <div class="col3">
+    <textarea id="code" cols="30" rows="10">
+repeat(6, () => {
+    repeat(4, () => {
+        t.fd(150);
+        t.rt(360 / 4);
+    });
+    t.up(360 / 6);
+});
+    </textarea>
+        </div>
+        <div id="main" class="col9">
+    </div>
+    </div>
+</div>
+</body>
+</html>
