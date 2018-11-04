@@ -12,6 +12,7 @@
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
             crossorigin="anonymous"></script>
     <script src="turtle.js"></script>
+    <script src="samples.js"></script>
     <script src="sketch.js"></script>
     <style type="text/css">
         body {
@@ -22,20 +23,18 @@
 <body>
 <div class="container">
     <h1>3D Logo Experiment</h1>
+    <p>Choose a sample and modify it, or write your own code.</p>
     <div class="row">
         <div class="col3">
-    <textarea id="code" cols="30" rows="10">
-repeat(6, () => {
-    repeat(4, () => {
-        t.fd(150);
-        t.rt(360 / 4);
-    });
-    t.up(360 / 6);
-});
+            <div style="margin-bottom: .5em">
+            <select id="samples"></select>
+            </div>
+    <textarea id="code" cols="30" rows="15">
     </textarea>
+            <div id="log"></div>
         </div>
         <div id="main" class="col9">
-    </div>
+        </div>
     </div>
 </div>
 </body>
