@@ -35,11 +35,11 @@ class Turtle {
     }
 
     createMovementVector(len) {
+        // todo: replace the use of this method with p5.Vector.fromAngles and make changes so that will work
         const x = len * sin(this.φ) * cos(this.θ);
         const y = len * sin(this.φ) * sin(this.θ);
         const z = len * cos(this.φ);
-        const moveBy = createVector(x, y, z);
-        return moveBy;
+        return createVector(x, y, z);
     }
 
     rt(degrees) {
