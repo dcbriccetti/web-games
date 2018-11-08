@@ -3,7 +3,8 @@ class Turtle {
         this.pos = createVector(0, 0, -100);
         this.θ = 0;
         this.φ = Math.PI / 2;
-        this.log = false;
+        this.logging = false;
+        this.cycleColors = false;
         this.lineCount = 0;
         this.commands = ['fd', 'rt', 'up'];
     }
@@ -16,34 +17,39 @@ class Turtle {
 
     static f(n) {return n.toFixed(3);}
 
-    l1(s) {if (this.log) $('#log').append(`<span>${s}</span><br/>`)}
+    log(s) {if (this.logging) $('#log').append(`<span>${s}</span><br/>`)}
 
     fd(len) {
-        const p = this.pos;
+        const pos = this.pos;
+        const moveBy = this.createMovementVector(len);
+        const f = Turtle.f;
+        this.log(`move by: ${f(moveBy.x)}, ${f(moveBy.y)}, ${f(moveBy.z)}`);
+        const newPos = p5.Vector.add(pos, moveBy);
+        if (this.cycleColors) {
+            const colors = ['red', 'green', 'blue', 'yellow'];
+            stroke(colors[this.lineCount++ % colors.length]);
+        }
+        line(pos.x, pos.y, pos.z, newPos.x, newPos.y, newPos.z);
+        this.pos = newPos;
+        this.log('fd: ' + this);
+    }
+
+    createMovementVector(len) {
         const x = len * sin(this.φ) * cos(this.θ);
         const y = len * sin(this.φ) * sin(this.θ);
         const z = len * cos(this.φ);
         const moveBy = createVector(x, y, z);
-        const f = Turtle.f;
-        this.l1(`move by: ${f(moveBy.x)}, ${f(moveBy.y)}, ${f(moveBy.z)}`);
-        const e = p5.Vector.add(p, moveBy);
-        if (false /* cycle colors */) {
-            const colors = ['red', 'green', 'blue', 'yellow'];
-            stroke(colors[this.lineCount++ % colors.length]);
-        }
-        line(p.x, p.y, p.z, e.x, e.y, e.z);
-        this.pos = e;
-        this.l1('fd: ' + this);
+        return moveBy;
     }
 
     rt(degrees) {
         this.θ += radians(degrees);
-        this.l1('rt: ' + this);
+        this.log('rt: ' + this);
     }
 
     up(degrees) {
         this.φ -= radians(degrees);
-        this.l1('up: ' + this);
+        this.log('up: ' + this);
     }
 
     toString() {
