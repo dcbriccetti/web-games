@@ -54,8 +54,8 @@
         }
 
         function quadEasingOut(currentFrame, duration) {
-            const x = currentFrame / duration;
-            return -x * (x - 2);
+            const t = currentFrame / duration;
+            return -t * (t - 2);
         }
     </script>
     <style type="text/css">
