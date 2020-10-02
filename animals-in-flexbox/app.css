@@ -1,0 +1,15 @@
+body {
+    font-family: sans-serif;
+}
+
+#container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.item {
+    margin: .5rem;
+    padding: 3rem;
+    background-color: lightblue;
+    font-size: 5rem;
+}
