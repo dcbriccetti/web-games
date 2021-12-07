@@ -42,16 +42,21 @@ function mouseYRatio() {
 }
 
 /**
- * Takes the mouse value in pixels, translates it to the center, constrains it to within the canvas dimensions, and
+ * Takes the mouse value in pixels, translates it to the center, and
  * returns the position as a number between -1 and 1.
  *
  * @param mouse either mouseX or mouseY
  * @param half half of either the width or height
- * @returns the position as a number between -1 and 1
+ * @returns the position as a number between -1 and 1, or undefined if the mouse is outside the canvas
  */
 function mouseRatio(mouse, half) {
     const mouseFromCenter = mouse - half;
-    return constrain(mouseFromCenter, -half, half) / half;
+    const number = mouseFromCenter / half;
+    if (abs(number) > 1) {
+        movable = false;
+        return undefined;
+    }
+    return number;
 }
 
 /**
@@ -69,7 +74,7 @@ function mouseMoved() {
         select('#xy').removeClass('invisible');
     }
 
-    if (movable) {
+    if (movable && x && y) {
         select('#x').html(x.toFixed(3));
         select('#y').html(y.toFixed(3));
     }
